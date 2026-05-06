@@ -84,6 +84,25 @@ func TestParseModList_Simple(t *testing.T) {
 	}
 }
 
+func TestParseModGraph_EmptyLines(t *testing.T) {
+	// Lines that are only whitespace should be skipped.
+	data := []byte("example.com/app github.com/x/y@v1.0.0\n\n   \n")
+	edges, err := goprovider.ParseModGraph(data)
+	if err != nil {
+		t.Fatalf("ParseModGraph: %v", err)
+	}
+	if len(edges) != 1 {
+		t.Errorf("expected 1 edge (blank lines skipped), got %d", len(edges))
+	}
+}
+
+func TestParseModList_InvalidJSON(t *testing.T) {
+	_, err := goprovider.ParseModList([]byte("{not valid json}"))
+	if err == nil {
+		t.Error("expected error for invalid JSON, got nil")
+	}
+}
+
 func TestParseModList_IndirectFlag(t *testing.T) {
 	data := readFixture(t, "modlist.json")
 	infos, err := goprovider.ParseModList(data)
