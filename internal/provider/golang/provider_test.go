@@ -106,6 +106,52 @@ func TestGoProvider_Parse_RunnerError(t *testing.T) {
 	}
 }
 
+func TestGoProvider_Detect_NonExistentDir(t *testing.T) {
+	p := goprovider.New()
+	ok, err := p.Detect(context.Background(), "/nonexistent/path/that/does/not/exist")
+	if err != nil {
+		t.Fatalf("Detect on non-existent dir: %v", err)
+	}
+	if ok {
+		t.Error("Detect() = true; want false for non-existent directory")
+	}
+}
+
+func TestGoProvider_Parse_PartialRunnerError(t *testing.T) {
+	// Runner succeeds for "graph" but fails for "all" (go list).
+	runner := &fakeRunner{
+		responses: map[string][]byte{
+			"graph": readFixture(t, "modgraph.txt"),
+		},
+	}
+	p := goprovider.NewWithRunner(runner)
+
+	_, _, err := p.Parse(context.Background(), "/fake/path", provider.ParseOptions{})
+	if err == nil {
+		t.Error("expected error when go list fails, got nil")
+	}
+}
+
+func TestGoProvider_Parse_EmptyModGraph(t *testing.T) {
+	runner := &fakeRunner{
+		responses: map[string][]byte{
+			"graph": []byte(""),
+			"all":   readFixture(t, "modlist.json"),
+		},
+	}
+	p := goprovider.NewWithRunner(runner)
+
+	// Empty mod graph means no edges — the graph should have zero nodes since
+	// all nodes come from edges in go mod graph output.
+	g, _, err := p.Parse(context.Background(), "/fake/path", provider.ParseOptions{})
+	if err != nil {
+		t.Fatalf("Parse: %v", err)
+	}
+	if g.NodeCount() != 0 {
+		t.Errorf("NodeCount = %d; want 0 for empty modgraph", g.NodeCount())
+	}
+}
+
 func TestGoProvider_Parse_IndirectFlag(t *testing.T) {
 	runner := newFakeRunnerFromFixtures(t)
 	p := goprovider.NewWithRunner(runner)
