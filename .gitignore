@@ -31,3 +31,10 @@ go.work.sum
 .vscode/
 .vscode/*
 
+#AI Agents
+.claude/
+.claude/*
+.gemini/
+.gemini/*
+.kiro/
+.kiro/*
