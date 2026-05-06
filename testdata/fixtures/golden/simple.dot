@@ -1,0 +1,9 @@
+digraph deps {
+  rankdir="LR";
+  node [shape=box fontname="Helvetica"];
+  "example.com/app@" [label="example.com/app\\n" style="bold"];
+  "github.com/spf13/cobra@v1.8.0" [label="github.com/spf13/cobra\\nv1.8.0"];
+  "github.com/spf13/pflag@v1.0.9" [label="github.com/spf13/pflag\\nv1.0.9" style="dashed"];
+  "example.com/app@" -> "github.com/spf13/cobra@v1.8.0";
+  "github.com/spf13/cobra@v1.8.0" -> "github.com/spf13/pflag@v1.0.9" [style="dashed"];
+}

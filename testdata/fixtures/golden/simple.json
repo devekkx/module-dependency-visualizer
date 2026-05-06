@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-05-06T12:00:00Z",
+  "project": {
+    "name": "example.com/app",
+    "language": "go",
+    "root_path": "/project",
+    "main_module": "example.com/app"
+  },
+  "nodes": [
+    {
+      "id": "example.com/app@",
+      "name": "example.com/app",
+      "version": "",
+      "kind": "main",
+      "indirect": false
+    },
+    {
+      "id": "github.com/spf13/cobra@v1.8.0",
+      "name": "github.com/spf13/cobra",
+      "version": "v1.8.0",
+      "kind": "module",
+      "indirect": false
+    },
+    {
+      "id": "github.com/spf13/pflag@v1.0.9",
+      "name": "github.com/spf13/pflag",
+      "version": "v1.0.9",
+      "kind": "module",
+      "indirect": true
+    }
+  ],
+  "edges": [
+    {
+      "from": "example.com/app@",
+      "to": "github.com/spf13/cobra@v1.8.0",
+      "kind": "depends_on"
+    },
+    {
+      "from": "github.com/spf13/cobra@v1.8.0",
+      "to": "github.com/spf13/pflag@v1.0.9",
+      "kind": "depends_on"
+    }
+  ],
+  "stats": {
+    "node_count": 3,
+    "edge_count": 2,
+    "max_depth": 2,
+    "has_cycles": false
+  }
+}
