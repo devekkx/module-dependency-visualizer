@@ -12,6 +12,8 @@ import (
 	"module-dependency-visualizer/internal/logging"
 	"module-dependency-visualizer/internal/provider"
 	goprovider "module-dependency-visualizer/internal/provider/golang"
+	nodeprovider "module-dependency-visualizer/internal/provider/node"
+	pyprovider "module-dependency-visualizer/internal/provider/python"
 	"module-dependency-visualizer/internal/schema"
 )
 
@@ -25,6 +27,12 @@ var (
 func main() {
 	provReg := provider.NewRegistry()
 	if err := provReg.Register(goprovider.New()); err != nil {
+		panic(err)
+	}
+	if err := provReg.Register(nodeprovider.New()); err != nil {
+		panic(err)
+	}
+	if err := provReg.Register(pyprovider.New()); err != nil {
 		panic(err)
 	}
 

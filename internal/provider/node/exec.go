@@ -1,4 +1,4 @@
-package npm
+package node
 
 import (
 	"bytes"
@@ -10,13 +10,13 @@ import (
 // Runner executes an external command and returns its stdout.
 // It is an interface so tests can inject a fake without shelling out.
 type Runner interface {
-	Run(ctx context.Context, dir string, name string, args ...string) ([]byte, error)
+	Run(ctx context.Context, dir, name string, args ...string) ([]byte, error)
 }
 
 // ExecRunner is the production Runner that shells out via os/exec.
 type ExecRunner struct{}
 
-// Run executes name with args in dir, returns stdout on success.
+// Run executes name with args in dir, returning stdout on success.
 // Stderr is captured and included in the error message on failure.
 func (ExecRunner) Run(ctx context.Context, dir, name string, args ...string) ([]byte, error) {
 	cmd := exec.CommandContext(ctx, name, args...)
@@ -31,3 +31,6 @@ func (ExecRunner) Run(ctx context.Context, dir, name string, args ...string) ([]
 	}
 	return stdout.Bytes(), nil
 }
+
+// lookPath wraps exec.LookPath so it can be overridden in tests.
+var lookPath = exec.LookPath
