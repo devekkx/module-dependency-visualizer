@@ -97,6 +97,7 @@ into a unified, interactive dependency graph.`,
 		newExportCmd(deps),
 		newVersionCmd(deps),
 		newServeCmd(deps),
+		newAuditCmd(deps),
 	)
 
 	return cmd

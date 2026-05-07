@@ -12,6 +12,8 @@ import (
 type EncodeOptions struct {
 	Project     Project
 	GeneratedAt time.Time
+	// Audit is an optional audit result embedded in the document.
+	Audit *AuditDTO
 }
 
 // Encode converts g to a deterministic JSON Document.
@@ -46,6 +48,7 @@ func Encode(g *graph.Graph, opts EncodeOptions) ([]byte, error) {
 			MaxDepth:  s.MaxDepth,
 			HasCycles: s.HasCycles,
 		},
+		Audit: opts.Audit,
 	}
 
 	var buf bytes.Buffer

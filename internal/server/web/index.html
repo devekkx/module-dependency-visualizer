@@ -54,6 +54,13 @@
                 <input id="show-dev" type="checkbox" checked />
                 Dev deps
             </label>
+
+            <button id="audit-btn" class="audit-trigger" title="Run security, license and conflict audit">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Audit
+            </button>
         </div>
     </header>
 
@@ -83,8 +90,18 @@
                         <th>Indirect</th>
                         <td id="detail-indirect"></td>
                     </tr>
+                    <tr id="detail-license-row" class="hidden">
+                        <th>License</th>
+                        <td id="detail-license"></td>
+                    </tr>
                 </tbody>
             </table>
+
+            <!-- Vulnerability list for selected node -->
+            <div id="detail-vulns-section" class="detail-section hidden">
+                <h4>Vulnerabilities (<span id="detail-vulns-count">0</span>)</h4>
+                <div id="detail-vulns-list"></div>
+            </div>
 
             <div class="detail-section">
                 <h4>Dependencies (<span id="detail-deps-count">0</span>)</h4>
@@ -113,6 +130,10 @@
                 <span class="legend-dot dev"></span>
                 <span>Indirect dep</span>
             </div>
+            <div class="legend-item hidden" id="legend-vuln">
+                <span class="legend-dot vuln"></span>
+                <span>Vulnerable</span>
+            </div>
         </div>
 
         <div id="stats">
@@ -124,6 +145,44 @@
     </footer>
 
 </div><!-- #app -->
+
+<!-- ── Audit Panel ───────────────────────────────────────────── -->
+<div id="audit-overlay" class="hidden">
+    <div id="audit-panel">
+        <div id="audit-panel-header">
+            <h2>Security Audit</h2>
+            <button id="audit-close" title="Close">&times;</button>
+        </div>
+        <div id="audit-loading" class="hidden">
+            <div class="spinner small"></div>
+            <span>Running audit… this may take a moment</span>
+        </div>
+        <div id="audit-error" class="hidden audit-error-msg"></div>
+        <div id="audit-results" class="hidden">
+            <div id="audit-section-vulns">
+                <h3 class="audit-section-title">
+                    <span>Vulnerabilities</span>
+                    <span id="audit-vuln-count" class="audit-count">0</span>
+                </h3>
+                <div id="audit-vuln-list"></div>
+            </div>
+            <div id="audit-section-conflicts">
+                <h3 class="audit-section-title">
+                    <span>Version Conflicts</span>
+                    <span id="audit-conflict-count" class="audit-count">0</span>
+                </h3>
+                <div id="audit-conflict-list"></div>
+            </div>
+            <div id="audit-section-licenses">
+                <h3 class="audit-section-title">
+                    <span>Licenses</span>
+                    <span id="audit-license-count" class="audit-count">0</span>
+                </h3>
+                <div id="audit-license-list"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- ── Tooltip ──────────────────────────────────────────────── -->
 <div id="tooltip"></div>

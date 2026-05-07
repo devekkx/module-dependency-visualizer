@@ -8,6 +8,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"module-dependency-visualizer/internal/audit"
 	"module-dependency-visualizer/internal/config"
 	"module-dependency-visualizer/internal/exporter/jsonexp"
 	"module-dependency-visualizer/internal/graph"
@@ -18,6 +19,7 @@ import (
 func newAnalyzeCmd(deps *Deps) *cobra.Command {
 	var f analyzeFlags
 	var timeout string
+	var runAudit bool
 
 	cmd := &cobra.Command{
 		Use:   "analyze <path>",
@@ -44,14 +46,25 @@ func newAnalyzeCmd(deps *Deps) *cobra.Command {
 				return err
 			}
 
-			enc := jsonexp.New(schema.EncodeOptions{
+			encOpts := schema.EncodeOptions{
 				Project: schema.Project{
 					Name:       proj.Name,
 					Language:   proj.Language,
 					RootPath:   proj.RootPath,
 					MainModule: proj.MainModule,
 				},
-			})
+			}
+
+			if runAudit {
+				a := audit.New(audit.Options{})
+				result, err := a.Run(ctx, filtered, proj.Language)
+				if err != nil {
+					return fmt.Errorf("analyze: audit: %w", err)
+				}
+				encOpts.Audit = AuditResultToDTO(result)
+			}
+
+			enc := jsonexp.New(encOpts)
 
 			w, closer, err := openOutput(f.Output)
 			if err != nil {
@@ -65,6 +78,7 @@ func newAnalyzeCmd(deps *Deps) *cobra.Command {
 
 	addAnalyzeFlags(cmd, &f)
 	cmd.Flags().StringVar(&timeout, "timeout", config.DefaultTimeout.String(), "Timeout for dependency resolution")
+	cmd.Flags().BoolVar(&runAudit, "audit", false, "Run security, license, and conflict audit and embed results in output")
 
 	return cmd
 }

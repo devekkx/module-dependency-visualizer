@@ -112,7 +112,7 @@ func TestEncode_DefaultGeneratedAt(t *testing.T) {
 func TestDecode_MalformedNodes(t *testing.T) {
 	// Duplicate node IDs should fail.
 	data := []byte(`{
-		"schema_version":"1.0.0",
+		"schema_version":"1.1.0",
 		"project":{},
 		"nodes":[
 			{"id":"a@v1","name":"a","version":"v1","kind":"module"},

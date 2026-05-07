@@ -184,7 +184,7 @@ func TestDecode_InvalidJSON(t *testing.T) {
 
 func TestDecode_UnknownEdgeNode(t *testing.T) {
 	data := []byte(`{
-		"schema_version":"1.0.0",
+		"schema_version":"1.1.0",
 		"project":{},
 		"nodes":[{"id":"a@v1","name":"a","version":"v1","kind":"module"}],
 		"edges":[{"from":"a@v1","to":"UNKNOWN@v1","kind":"depends_on"}],

@@ -11,6 +11,8 @@ import (
 	"sync"
 	"time"
 
+	"module-dependency-visualizer/internal/audit"
+	"module-dependency-visualizer/internal/graph"
 	"module-dependency-visualizer/internal/provider"
 	"module-dependency-visualizer/internal/schema"
 )
@@ -31,9 +33,15 @@ type Server struct {
 	providers *provider.Registry
 	opts      Options
 
-	mu        sync.RWMutex
-	graphJSON []byte
-	project   provider.Project
+	mu          sync.RWMutex
+	graphJSON   []byte
+	cachedGraph *graph.Graph
+	project     provider.Project
+
+	// audit state: lazily populated on first GET /api/audit
+	auditOnce sync.Once
+	auditJSON []byte
+	auditErr  error
 
 	httpSrv *http.Server
 }
@@ -48,7 +56,14 @@ func New(providers *provider.Registry, opts Options) *Server {
 // Useful for testing without running provider parsing. Calling Start on such
 // a server skips provider detection and uses the supplied data directly.
 func NewFromJSON(graphJSON []byte, proj provider.Project) *Server {
-	return &Server{graphJSON: graphJSON, project: proj}
+	s := &Server{graphJSON: graphJSON, project: proj}
+	if len(graphJSON) > 0 {
+		g, _, err := schema.Decode(graphJSON)
+		if err == nil {
+			s.cachedGraph = g
+		}
+	}
+	return s
 }
 
 // Handler returns the HTTP handler that serves the visualisation UI.
@@ -63,6 +78,7 @@ func (s *Server) Handler() http.Handler {
 
 	mux.HandleFunc("GET /api/graph", s.handleGraph)
 	mux.HandleFunc("GET /api/info", s.handleInfo)
+	mux.HandleFunc("GET /api/audit", s.handleAudit)
 
 	// Static assets under /static/
 	mux.Handle("GET /static/", http.FileServer(http.FS(webContent)))
@@ -148,6 +164,7 @@ func (s *Server) loadGraph(ctx context.Context) error {
 
 	s.mu.Lock()
 	s.graphJSON = jsonData
+	s.cachedGraph = g
 	s.project = proj
 	s.mu.Unlock()
 
@@ -168,6 +185,70 @@ func (s *Server) handleGraph(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-store")
 	_, _ = w.Write(data)
+}
+
+// handleAudit runs a vulnerability / license / conflict audit and returns JSON.
+// Results are computed once and cached for subsequent requests.
+func (s *Server) handleAudit(w http.ResponseWriter, r *http.Request) {
+	s.auditOnce.Do(func() {
+		s.mu.RLock()
+		g := s.cachedGraph
+		proj := s.project
+		s.mu.RUnlock()
+
+		if g == nil {
+			s.auditErr = fmt.Errorf("graph not yet loaded")
+			return
+		}
+
+		a := audit.New(audit.Options{})
+		result, err := a.Run(r.Context(), g, proj.Language)
+		if err != nil {
+			s.auditErr = fmt.Errorf("audit: %w", err)
+			return
+		}
+
+		dto := auditResultToServerDTO(result)
+		data, err := json.Marshal(dto)
+		if err != nil {
+			s.auditErr = fmt.Errorf("encode audit: %w", err)
+			return
+		}
+		s.auditJSON = data
+	})
+
+	if s.auditErr != nil {
+		http.Error(w, s.auditErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-store")
+	_, _ = w.Write(s.auditJSON)
+}
+
+func auditResultToServerDTO(r *audit.Result) schema.AuditDTO {
+	dto := schema.AuditDTO{
+		ScannedAt: r.ScannedAt,
+		Licenses:  r.Licenses,
+	}
+	for _, v := range r.Vulnerabilities {
+		dto.Vulnerabilities = append(dto.Vulnerabilities, schema.VulnDTO{
+			NodeID:   v.NodeID,
+			ID:       v.ID,
+			Summary:  v.Summary,
+			Severity: v.Severity,
+			FixedIn:  v.FixedIn,
+			Link:     v.Link,
+		})
+	}
+	for _, c := range r.Conflicts {
+		dto.Conflicts = append(dto.Conflicts, schema.ConflictDTO{
+			Module:   c.Module,
+			Versions: c.Versions,
+		})
+	}
+	return dto
 }
 
 // handleInfo serves lightweight project metadata as JSON.
