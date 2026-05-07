@@ -379,3 +379,74 @@ func TestServer_New_DetectError(t *testing.T) {
 	}
 }
 
+// ── /api/audit tests ──────────────────────────────────────────
+
+func TestHandler_AuditEndpoint_OK(t *testing.T) {
+	ts := newTestServer(t)
+	defer ts.Close()
+
+	resp, err := http.Get(ts.URL + "/api/audit")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		t.Fatalf("GET /api/audit status = %d, want 200; body: %s", resp.StatusCode, body)
+	}
+	ct := resp.Header.Get("Content-Type")
+	if !strings.Contains(ct, "application/json") {
+		t.Errorf("Content-Type = %q, want application/json", ct)
+	}
+
+	var payload map[string]any
+	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
+		t.Fatalf("decode JSON: %v", err)
+	}
+	for _, key := range []string{"vulnerabilities", "conflicts", "licenses"} {
+		if _, ok := payload[key]; !ok {
+			t.Errorf("audit response missing %q key; got %v", key, payload)
+		}
+	}
+}
+
+func TestHandler_AuditEndpoint_Cached(t *testing.T) {
+	ts := newTestServer(t)
+	defer ts.Close()
+
+	// First call runs the audit.
+	resp1, err := http.Get(ts.URL + "/api/audit")
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp1.Body.Close()
+
+	// Second call should return the same cached result.
+	resp2, err := http.Get(ts.URL + "/api/audit")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp2.Body.Close()
+
+	if resp2.StatusCode != http.StatusOK {
+		t.Fatalf("second GET /api/audit status = %d, want 200", resp2.StatusCode)
+	}
+}
+
+func TestHandler_AuditEndpoint_Unavailable(t *testing.T) {
+	srv := server.NewFromJSON(nil, provider.Project{})
+	ts := httptest.NewServer(srv.Handler())
+	defer ts.Close()
+
+	resp, err := http.Get(ts.URL + "/api/audit")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusInternalServerError {
+		t.Fatalf("status = %d, want 500", resp.StatusCode)
+	}
+}
+

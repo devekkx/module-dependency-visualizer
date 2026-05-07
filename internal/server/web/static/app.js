@@ -11,6 +11,7 @@ const CFG = {
         main:    '#e74c3c',
         module:  '#2980b9',
         dev:     '#7f8c8d',
+        vuln:    '#e53e3e',
         link:    '#aab8c2',
         hlLink:  '#e67e22',
     },
@@ -24,11 +25,14 @@ const state = {
     maxDepth:  Infinity,
     showDev:   true,
     selected:  null,
+    // audit
+    audit:     null,  // schema.AuditDTO once loaded
+    vulnMap:   {},    // nodeID → [VulnDTO]
 };
 
 // D3 selections / simulation
 let svgEl, gEl, simulation;
-let linkSel, nodeSel, labelSel;
+let linkSel, nodeSel, labelSel, vulnRingSel;
 
 // Bootstrap
 document.addEventListener('DOMContentLoaded', init);
@@ -45,6 +49,11 @@ async function init() {
             target: e.to,
             kind:   e.kind || 'depends_on',
         }));
+
+        // Pre-load audit data embedded in the document (from mdv analyze --audit).
+        if (data.audit) {
+            applyAuditData(data.audit);
+        }
 
         document.getElementById('loading').classList.add('hidden');
         document.getElementById('app').classList.remove('hidden');
@@ -119,6 +128,7 @@ function setupSVG() {
 
     gEl = svgEl.append('g');
     gEl.append('g').attr('class', 'links');
+    gEl.append('g').attr('class', 'vuln-rings');
     gEl.append('g').attr('class', 'nodes');
     gEl.append('g').attr('class', 'labels');
 
@@ -155,6 +165,13 @@ function setupControls() {
     });
 
     document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
+
+    // Audit button
+    document.getElementById('audit-btn').addEventListener('click', openAuditPanel);
+    document.getElementById('audit-close').addEventListener('click', closeAuditPanel);
+    document.getElementById('audit-overlay').addEventListener('click', e => {
+        if (e.target === document.getElementById('audit-overlay')) closeAuditPanel();
+    });
 }
 
 // BFS depth filtering
@@ -233,6 +250,17 @@ function render() {
             exit   => exit.transition().duration(CFG.transitionMs).attr('opacity', 0).remove()
         );
 
+    // Vulnerability rings (drawn behind nodes)
+    vulnRingSel = gEl.select('.vuln-rings').selectAll('circle')
+        .data(nodes.filter(d => state.vulnMap[d.id]?.length > 0), d => d.id)
+        .join(
+            enter => enter.append('circle')
+                .attr('class', 'node-vuln-ring')
+                .attr('r', d => (d.kind === 'main' ? CFG.mainRadius : CFG.nodeRadius) + 5),
+            update => update,
+            exit   => exit.remove()
+        );
+
     // Nodes
     nodeSel = gEl.select('.nodes').selectAll('circle')
         .data(nodes, d => d.id)
@@ -247,6 +275,7 @@ function render() {
                     .attr('cursor',       'pointer')
                     .attr('opacity', 0)
                     .call(el => el.transition().duration(CFG.transitionMs).attr('opacity', 1));
+
                 c.call(dragBehaviour(simulation));
                 c.on('click',     (ev, d) => { ev.stopPropagation(); showDetail(d); });
                 c.on('mouseover', showTooltip);
@@ -280,6 +309,9 @@ function render() {
             .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
         nodeSel .attr('cx', d => d.x).attr('cy', d => d.y);
         labelSel.attr('x',  d => d.x).attr('y',  d => d.y);
+        if (vulnRingSel) {
+            vulnRingSel.attr('cx', d => d.x).attr('cy', d => d.y);
+        }
     });
 
     updateHighlight();
@@ -323,7 +355,9 @@ function dragBehaviour(sim) {
 const tooltip = document.getElementById('tooltip');
 
 function showTooltip(ev, d) {
-    tooltip.innerHTML = `<strong>${d.name}</strong><br><span style="opacity:.7">${d.version || ''}</span>`;
+    const vulns = state.vulnMap[d.id] || [];
+    const vulnHint = vulns.length > 0 ? `<br><span style="color:#fc8181">⚠ ${vulns.length} vuln${vulns.length > 1 ? 's' : ''}</span>` : '';
+    tooltip.innerHTML = `<strong>${d.name}</strong><br><span style="opacity:.7">${d.version || ''}</span>${vulnHint}`;
     tooltip.style.display = 'block';
     tooltip.style.left    = (ev.pageX + 14) + 'px';
     tooltip.style.top     = (ev.pageY - 36) + 'px';
@@ -350,6 +384,36 @@ function showDetail(d) {
     document.getElementById('detail-version').textContent = d.version  || '—';
     document.getElementById('detail-kind').textContent    = d.kind     || '—';
     document.getElementById('detail-indirect').textContent = d.indirect ? 'Yes' : 'No';
+
+    // License
+    const licenseRow = document.getElementById('detail-license-row');
+    if (state.audit && state.audit.licenses && state.audit.licenses[d.id]) {
+        document.getElementById('detail-license').textContent = state.audit.licenses[d.id];
+        licenseRow.classList.remove('hidden');
+    } else {
+        licenseRow.classList.add('hidden');
+    }
+
+    // Vulnerabilities for this node
+    const vulns = state.vulnMap[d.id] || [];
+    const vulnsSection = document.getElementById('detail-vulns-section');
+    if (vulns.length > 0) {
+        document.getElementById('detail-vulns-count').textContent = vulns.length;
+        const list = document.getElementById('detail-vulns-list');
+        list.innerHTML = vulns.map(v => `
+            <div class="sidebar-vuln">
+                <div>
+                    <a class="sidebar-vuln-id" href="${v.link || '#'}" target="_blank" rel="noopener">${v.id}</a>
+                    <span class="sev-badge sev-${v.severity || 'UNKNOWN'}" style="margin-left:6px">${v.severity || 'UNKNOWN'}</span>
+                </div>
+                <div class="sidebar-vuln-summary">${v.summary || ''}</div>
+                ${v.fixed_in ? `<div style="font-size:.75rem;color:#065f46;margin-top:3px">Fix: ${v.fixed_in}</div>` : ''}
+            </div>
+        `).join('');
+        vulnsSection.classList.remove('hidden');
+    } else {
+        vulnsSection.classList.add('hidden');
+    }
 
     renderDepList('detail-deps',       deps);
     renderDepList('detail-dependents', dependents);
@@ -389,4 +453,125 @@ function nodeColor(d) {
 
 function resolveId(ref) {
     return typeof ref === 'object' ? ref.id : ref;
+}
+
+// ── Audit ────────────────────────────────────────────────────
+
+async function openAuditPanel() {
+    const overlay  = document.getElementById('audit-overlay');
+    const loading  = document.getElementById('audit-loading');
+    const results  = document.getElementById('audit-results');
+    const errEl    = document.getElementById('audit-error');
+    const btn      = document.getElementById('audit-btn');
+
+    overlay.classList.remove('hidden');
+    errEl.classList.add('hidden');
+    results.classList.add('hidden');
+
+    if (state.audit) {
+        // Already loaded — just show results.
+        renderAuditResults(state.audit);
+        loading.classList.add('hidden');
+        results.classList.remove('hidden');
+        return;
+    }
+
+    loading.classList.remove('hidden');
+    btn.classList.add('running');
+    btn.textContent = 'Running…';
+
+    try {
+        const res = await fetch('/api/audit');
+        if (!res.ok) {
+            const msg = await res.text();
+            throw new Error(msg || `Audit failed (${res.status})`);
+        }
+        const data = await res.json();
+        applyAuditData(data);
+        renderAuditResults(data);
+        loading.classList.add('hidden');
+        results.classList.remove('hidden');
+    } catch (err) {
+        loading.classList.add('hidden');
+        errEl.textContent = err.message;
+        errEl.classList.remove('hidden');
+    } finally {
+        btn.classList.remove('running');
+        btn.innerHTML = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Audit`;
+    }
+}
+
+function closeAuditPanel() {
+    document.getElementById('audit-overlay').classList.add('hidden');
+}
+
+// Apply audit data to state and update the graph visually.
+function applyAuditData(data) {
+    state.audit = data;
+    state.vulnMap = {};
+    (data.vulnerabilities || []).forEach(v => {
+        (state.vulnMap[v.node_id] ??= []).push(v);
+    });
+
+    // Show legend entry for vulnerable nodes.
+    if (Object.keys(state.vulnMap).length > 0) {
+        document.getElementById('legend-vuln').classList.remove('hidden');
+    }
+
+    // Re-render to show vulnerability rings.
+    if (nodeSel) render();
+}
+
+function renderAuditResults(data) {
+    const vulns     = data.vulnerabilities  || [];
+    const conflicts = data.conflicts        || [];
+    const licenses  = data.licenses         || {};
+
+    // --- Vulnerabilities ---
+    document.getElementById('audit-vuln-count').textContent = vulns.length;
+    const vulnList = document.getElementById('audit-vuln-list');
+    if (vulns.length === 0) {
+        vulnList.innerHTML = '<p class="audit-empty">No vulnerabilities found.</p>';
+    } else {
+        vulnList.innerHTML = vulns.map(v => `
+            <div class="vuln-card">
+                <div class="vuln-card-header">
+                    <a class="vuln-id" href="${v.link || '#'}" target="_blank" rel="noopener">${v.id}</a>
+                    <span class="sev-badge sev-${v.severity || 'UNKNOWN'}">${v.severity || 'UNKNOWN'}</span>
+                </div>
+                <div class="vuln-summary">${v.summary || '—'}</div>
+                <div class="vuln-module">${v.node_id}</div>
+                ${v.fixed_in ? `<div class="vuln-fix">Fix: upgrade to ${v.fixed_in}</div>` : ''}
+            </div>
+        `).join('');
+    }
+
+    // --- Conflicts ---
+    document.getElementById('audit-conflict-count').textContent = conflicts.length;
+    const conflictList = document.getElementById('audit-conflict-list');
+    if (conflicts.length === 0) {
+        conflictList.innerHTML = '<p class="audit-empty">No version conflicts detected.</p>';
+    } else {
+        conflictList.innerHTML = conflicts.map(c => `
+            <div class="conflict-row">
+                <span class="conflict-module" title="${c.module}">${c.module}</span>
+                <span class="conflict-versions">${(c.versions || []).join(' · ')}</span>
+            </div>
+        `).join('');
+    }
+
+    // --- Licenses ---
+    const licenseEntries = Object.entries(licenses);
+    document.getElementById('audit-license-count').textContent = licenseEntries.length;
+    const licenseList = document.getElementById('audit-license-list');
+    if (licenseEntries.length === 0) {
+        licenseList.innerHTML = '<p class="audit-empty">No license data available.</p>';
+    } else {
+        licenseList.innerHTML = licenseEntries.map(([nodeID, lic]) => `
+            <div class="license-row">
+                <span class="license-module" title="${nodeID}">${nodeID}</span>
+                <span class="license-spdx">${lic}</span>
+            </div>
+        `).join('');
+    }
 }
