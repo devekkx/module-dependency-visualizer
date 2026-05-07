@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"module-dependency-visualizer/internal/cli"
+	"module-dependency-visualizer/internal/provider"
 )
 
 // TestExecute_NoProviders verifies that Execute() runs without panicking.
@@ -147,5 +148,36 @@ func TestAnalyze_NoIndirectFlag(t *testing.T) {
 	code := cli.ExecuteWithDeps(deps, []string{"analyze", ".", "--no-indirect"})
 	if code != 0 {
 		t.Errorf("analyze --no-indirect exit code = %d; want 0", code)
+	}
+}
+
+// ── serve command tests ───────────────────────────────────────
+
+func TestServeCmd_NoProviders_ReturnsError(t *testing.T) {
+	deps := buildTestDeps(t)
+	// Remove all providers so Detect returns "no provider found" error.
+	deps.Providers = provider.NewRegistry()
+
+	code := cli.ExecuteWithDeps(deps, []string{"serve", "."})
+	if code == 0 {
+		t.Error("expected non-zero exit when no provider matches, got 0")
+	}
+}
+
+func TestServeCmd_FlagsExist(t *testing.T) {
+	deps := buildTestDeps(t)
+	code := cli.ExecuteWithDeps(deps, []string{"serve", "--help"})
+	// --help exits 0 in cobra.
+	if code != 0 {
+		t.Errorf("serve --help exit code = %d, want 0", code)
+	}
+}
+
+func TestServeCmd_InvalidPort_ReturnsError(t *testing.T) {
+	deps := buildTestDeps(t)
+	// Port 99999 is out of valid range; bind will fail.
+	code := cli.ExecuteWithDeps(deps, []string{"serve", "--port", "99999", "--no-browser", "."})
+	if code == 0 {
+		t.Error("expected non-zero exit for invalid port, got 0")
 	}
 }
