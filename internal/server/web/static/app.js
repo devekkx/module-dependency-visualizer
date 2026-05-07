@@ -1,7 +1,4 @@
-// ============================================================
-//  MDV — Module Dependency Visualiser  (D3.js v7)
-// ============================================================
-
+//  MDV - Module Dependency Visualiser  (D3.js v7)
 const CFG = {
     nodeRadius:      8,
     mainRadius:      12,
@@ -19,7 +16,7 @@ const CFG = {
     },
 };
 
-// ── State ────────────────────────────────────────────────────
+// State
 const state = {
     allNodes:  [],
     allLinks:  [],
@@ -29,11 +26,11 @@ const state = {
     selected:  null,
 };
 
-// ── D3 selections / simulation ───────────────────────────────
+// D3 selections / simulation
 let svgEl, gEl, simulation;
 let linkSel, nodeSel, labelSel;
 
-// ── Bootstrap ────────────────────────────────────────────────
+// Bootstrap
 document.addEventListener('DOMContentLoaded', init);
 
 async function init() {
@@ -86,7 +83,7 @@ function applyMeta(data) {
     }
 }
 
-// ── SVG + Zoom ───────────────────────────────────────────────
+// SVG + Zoom
 function setupSVG() {
     const container = document.getElementById('graph-container');
 
@@ -136,7 +133,7 @@ function setupSVG() {
     }).observe(container);
 }
 
-// ── Controls ─────────────────────────────────────────────────
+// Controls
 function setupControls() {
     document.getElementById('search').addEventListener('input', function () {
         state.search = this.value.trim().toLowerCase();
@@ -160,7 +157,7 @@ function setupControls() {
     document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
 }
 
-// ── BFS depth filtering ───────────────────────────────────────
+// BFS depth filtering
 function bfsFromRoot(maxD) {
     const root = state.allNodes.find(n => n.kind === 'main') || state.allNodes[0];
     if (!root) return new Set();
@@ -199,7 +196,7 @@ function getVisible() {
     return { nodes: visNodes, links: visLinks };
 }
 
-// ── Render ───────────────────────────────────────────────────
+// Render
 function render() {
     const { nodes, links } = getVisible();
     const visCount = nodes.length;
@@ -288,7 +285,7 @@ function render() {
     updateHighlight();
 }
 
-// ── Highlight (search) ────────────────────────────────────────
+// Highlight (search)
 function updateHighlight() {
     if (!nodeSel) return;
     const q = state.search;
@@ -308,7 +305,7 @@ function updateHighlight() {
     });
 }
 
-// ── Drag ─────────────────────────────────────────────────────
+// Drag
 function dragBehaviour(sim) {
     return d3.drag()
         .on('start', (ev, d) => {
@@ -322,7 +319,7 @@ function dragBehaviour(sim) {
         });
 }
 
-// ── Tooltip ───────────────────────────────────────────────────
+// Tooltip
 const tooltip = document.getElementById('tooltip');
 
 function showTooltip(ev, d) {
@@ -334,7 +331,7 @@ function showTooltip(ev, d) {
 
 function hideTooltip() { tooltip.style.display = 'none'; }
 
-// ── Node detail sidebar ───────────────────────────────────────
+// Node detail sidebar
 function showDetail(d) {
     state.selected = d.id;
     hideTooltip();
@@ -383,7 +380,7 @@ function closeSidebar() {
     state.selected = null;
 }
 
-// ── Helpers ───────────────────────────────────────────────────
+// Helpers
 function nodeColor(d) {
     if (d.kind === 'main') return CFG.colors.main;
     if (d.indirect)        return CFG.colors.dev;

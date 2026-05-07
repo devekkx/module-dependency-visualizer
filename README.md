@@ -1,4 +1,4 @@
-# mdv — Module Dependency Visualizer
+# mdv - Module Dependency Visualizer
 
 **Understand your project's architecture before it becomes technical debt.**
 
