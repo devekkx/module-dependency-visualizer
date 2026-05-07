@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MDV — Module Dependency Visualizer</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<!-- ── Loading ──────────────────────────────────────────────── -->
+<div id="loading">
+    <div class="spinner"></div>
+    <span>Analysing dependencies…</span>
+</div>
+
+<!-- ── Error ────────────────────────────────────────────────── -->
+<div id="error-banner" class="hidden">
+    <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <span class="error-msg">Unable to load graph</span>
+</div>
+
+<!-- ── App ──────────────────────────────────────────────────── -->
+<div id="app" class="hidden">
+
+    <!-- Top bar -->
+    <header id="topbar">
+        <div id="topbar-brand">
+            <span id="topbar-title">MDV</span>
+            <span id="project-name"></span>
+            <span id="lang-badge" class="lang-badge hidden"></span>
+        </div>
+
+        <div id="controls">
+            <input
+                id="search"
+                type="search"
+                placeholder="Search modules…"
+                autocomplete="off"
+                spellcheck="false"
+            />
+
+            <label class="ctrl-group" title="Max dependency depth from root">
+                Depth
+                <input id="depth-slider" type="range" min="1" max="10" value="10" />
+                <span id="depth-value">∞</span>
+            </label>
+
+            <label class="ctrl-group" title="Show / hide indirect (dev) dependencies">
+                <input id="show-dev" type="checkbox" checked />
+                Dev deps
+            </label>
+        </div>
+    </header>
+
+    <!-- Graph + sidebar -->
+    <div id="main">
+        <div id="graph-container">
+            <div id="empty-state">No modules found</div>
+        </div>
+
+        <aside id="sidebar" class="hidden">
+            <div id="sidebar-header">
+                <span id="detail-name"></span>
+                <button id="sidebar-close" title="Close">&times;</button>
+            </div>
+
+            <table class="detail-table">
+                <tbody>
+                    <tr>
+                        <th>Version</th>
+                        <td id="detail-version"></td>
+                    </tr>
+                    <tr>
+                        <th>Kind</th>
+                        <td id="detail-kind"></td>
+                    </tr>
+                    <tr>
+                        <th>Indirect</th>
+                        <td id="detail-indirect"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="detail-section">
+                <h4>Dependencies (<span id="detail-deps-count">0</span>)</h4>
+                <div id="detail-deps" class="dep-list"></div>
+            </div>
+
+            <div class="detail-section">
+                <h4>Dependents (<span id="detail-dependents-count">0</span>)</h4>
+                <div id="detail-dependents" class="dep-list"></div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Status bar -->
+    <footer id="statusbar">
+        <div id="legend">
+            <div class="legend-item">
+                <span class="legend-dot main"></span>
+                <span>Main module</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-dot module"></span>
+                <span>Direct dep</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-dot dev"></span>
+                <span>Indirect dep</span>
+            </div>
+        </div>
+
+        <div id="stats">
+            <span id="stat-nodes"></span>
+            <span id="stat-sep">·</span>
+            <span id="stat-edges"></span>
+            <span id="stat-visible"></span>
+        </div>
+    </footer>
+
+</div><!-- #app -->
+
+<!-- ── Tooltip ──────────────────────────────────────────────── -->
+<div id="tooltip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"
+        integrity="sha256-1rA8B5LDMZ+2+n/LOqMdAiuZQyIZiKmC11AhFLvKAA="
+        crossorigin="anonymous"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
