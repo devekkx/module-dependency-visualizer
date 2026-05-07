@@ -98,6 +98,8 @@ into a unified, interactive dependency graph.`,
 		newVersionCmd(deps),
 		newServeCmd(deps),
 		newAuditCmd(deps),
+		newDiffCmd(deps),
+		newDocsCmd(deps),
 	)
 
 	return cmd

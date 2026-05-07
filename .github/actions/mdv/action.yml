@@ -1,0 +1,81 @@
+name: mdv — Module Dependency Visualizer
+description: Analyze dependencies, detect vulnerabilities, and report changes between refs.
+
+inputs:
+  path:
+    description: Path to the project root (relative to the repository root).
+    required: false
+    default: "."
+  format:
+    description: Output format for the analyze command (table, json, markdown).
+    required: false
+    default: table
+  audit:
+    description: Run vulnerability and license audit.
+    required: false
+    default: "false"
+  diff:
+    description: Report dependency changes since this ref (e.g. HEAD~1, main).
+    required: false
+    default: ""
+  generate-docs:
+    description: Write DEPENDENCIES.md to the project root.
+    required: false
+    default: "false"
+  version:
+    description: mdv release tag to install (e.g. v0.3.0). Defaults to latest.
+    required: false
+    default: latest
+
+outputs:
+  summary-file:
+    description: Path to the written DEPENDENCIES.md (only set when generate-docs is true).
+    value: ${{ steps.docs.outputs.file }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install mdv
+      shell: bash
+      run: |
+        VERSION="${{ inputs.version }}"
+        if [ "$VERSION" = "latest" ]; then
+          VERSION=$(curl -fsSL https://api.github.com/repos/devekkx/module-dependency-visualizer/releases/latest \
+            | grep '"tag_name"' | cut -d'"' -f4)
+        fi
+        OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+        ARCH=$(uname -m)
+        case "$ARCH" in
+          x86_64) ARCH=amd64 ;;
+          aarch64|arm64) ARCH=arm64 ;;
+        esac
+        URL="https://github.com/devekkx/module-dependency-visualizer/releases/download/${VERSION}/mdv_${OS}_${ARCH}.tar.gz"
+        curl -fsSL "$URL" | tar -xz -C /usr/local/bin mdv
+        mdv version
+
+    - name: Analyze dependencies
+      shell: bash
+      run: |
+        ARGS="${{ inputs.path }}"
+        if [ "${{ inputs.audit }}" = "true" ]; then
+          ARGS="$ARGS --audit"
+        fi
+        mdv analyze $ARGS --format ${{ inputs.format }}
+
+    - name: Diff dependencies
+      if: inputs.diff != ''
+      shell: bash
+      run: mdv diff ${{ inputs.path }} --from ${{ inputs.diff }}
+
+    - name: Generate docs
+      id: docs
+      if: inputs.generate-docs == 'true'
+      shell: bash
+      run: |
+        AUDIT_FLAG=""
+        if [ "${{ inputs.audit }}" = "true" ]; then
+          AUDIT_FLAG="--audit"
+        fi
+        OUT="${{ inputs.path }}/DEPENDENCIES.md"
+        mdv docs ${{ inputs.path }} --output "$OUT" $AUDIT_FLAG
+        echo "file=$OUT" >> "$GITHUB_OUTPUT"
