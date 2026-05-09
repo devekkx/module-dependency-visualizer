@@ -41,7 +41,7 @@
 | **Multiple export formats** | JSON (schema v1.1), Graphviz DOT, Mermaid |
 | **Dependency diff** | Compares snapshots across any two git refs |
 | **Doc generation** | Writes a `DEPENDENCIES.md` report, suitable for committing alongside releases |
-| **GitHub Actions** | Drop-in composite action - analyze, audit, diff, and generate docs on every PR |
+| **GitHub Actions** | Drop-in composite action - analyse, audit, diff, and generate docs on every PR |
 
 ---
 
@@ -73,7 +73,7 @@ Verify checksums with the `checksums.txt` file included in each release.
 
 ### Docker
 
-No installation required — mount your project directory and run:
+No installation required - mount your project directory and run:
 
 ```bash
 # Analyze

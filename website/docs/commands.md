@@ -134,7 +134,7 @@ mdv serve <path> [flags]
 **Example**
 
 ```bash
-# Port is auto-assigned — the chosen address is printed to stdout
+# Port is auto-assigned - the chosen address is printed to stdout
 mdv serve . --audit
 
 # Use a fixed port

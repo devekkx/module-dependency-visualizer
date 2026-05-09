@@ -1,6 +1,6 @@
 # GitHub Actions
 
-`mdv` ships a composite Action that can analyze dependencies, run audits, diff across refs, and generate `DEPENDENCIES.md` - all within a single workflow step.
+`mdv` ships a composite Action that can analyse dependencies, run audits, diff across refs, and generate `DEPENDENCIES.md` - all within a single workflow step.
 
 ## Quick Setup
 
@@ -37,7 +37,7 @@ jobs:
 | Input | Default | Description |
 |---|---|---|
 | `path` | `.` | Path to the project root (relative to repo root) |
-| `format` | `table` | Output format for the analyze step: `table`, `json`, `markdown` |
+| `format` | `table` | Output format for the analyse step: `table`, `json`, `markdown` |
 | `audit` | `false` | Run vulnerability and license audit |
 | `diff` | `""` | Show dependency changes since this ref (e.g. `HEAD~1`, `main`) |
 | `generate-docs` | `false` | Write `DEPENDENCIES.md` to `<path>/DEPENDENCIES.md` |
@@ -53,7 +53,7 @@ jobs:
 
 ## Example Workflows
 
-### Analyze with audit on every PR
+### Analyse with audit on every PR
 
 ```yaml
 - uses: devekkx/module-dependency-visualizer/.github/actions/mdv@main

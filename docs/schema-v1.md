@@ -20,11 +20,11 @@
 |------------------|----------|-----------------------------------------------------|
 | `schema_version` | `string` | Always `"1.1.0"` in this version                   |
 | `generated_at`   | `string` | RFC3339 UTC timestamp of analysis                   |
-| `project`        | object   | Describes the analyzed project                      |
+| `project`        | object   | Describes the analysed project                      |
 | `nodes`          | array    | Sorted by `id` for determinism                      |
 | `edges`          | array    | Sorted by `(from, to)` for determinism              |
 | `stats`          | object   | Aggregate graph metrics                             |
-| `audit`          | object   | Optional — present only when `--audit` flag is used |
+| `audit`          | object   | Optional - present only when `--audit` flag is used |
 
 ## `project`
 

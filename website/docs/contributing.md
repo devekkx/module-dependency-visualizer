@@ -65,7 +65,7 @@ Open an [issue](https://github.com/devekkx/module-dependency-visualizer/issues) 
 
 - A clear description of the problem
 - Steps to reproduce
-- Expected vs. actual behavior
+- Expected vs. actual behaviour
 - Go version (`go version`) and OS
 
 ## Suggesting Features

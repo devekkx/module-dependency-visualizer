@@ -23,7 +23,7 @@ Current version: **1.1.0**
 |---|---|---|
 | `schema_version` | `string` | Schema version string |
 | `generated_at` | `string` | RFC3339 UTC timestamp of analysis |
-| `project` | object | Describes the analyzed project |
+| `project` | object | Describes the analysed project |
 | `nodes` | array | Sorted by `id` for determinism |
 | `edges` | array | Sorted by `(from, to)` for determinism |
 | `stats` | object | Aggregate graph metrics |
@@ -45,7 +45,7 @@ Current version: **1.1.0**
 |---|---|---|
 | `name` | `string` | Project name (module path for Go, package name for Node/Python) |
 | `language` | `string` | Detected language: `go`, `node`, `python` |
-| `root_path` | `string` | Absolute path to the analyzed directory |
+| `root_path` | `string` | Absolute path to the analysed directory |
 | `main_module` | `string` | The root module/package identifier |
 
 ---

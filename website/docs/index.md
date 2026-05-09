@@ -34,5 +34,5 @@ features:
     details: Compare dependency snapshots across git refs and see exactly what changed - additions, removals, and version bumps.
   - icon: ⚙️
     title: GitHub Actions Ready
-    details: A drop-in composite action analyzes, audits, diffs, and generates DEPENDENCIES.md on every PR.
+    details: A drop-in composite action analyses, audits, diffs, and generates DEPENDENCIES.md on every PR.
 ---

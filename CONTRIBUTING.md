@@ -20,7 +20,7 @@ Thank you for your interest in contributing! This document covers everything you
 
 ## Code of Conduct
 
-Be respectful and constructive. Harassment or exclusionary behavior of any kind will not be tolerated.
+Be respectful and constructive. Harassment or exclusionary behaviour of any kind will not be tolerated.
 
 ---
 
@@ -161,7 +161,7 @@ Open an [issue](https://github.com/devekkx/module-dependency-visualizer/issues) 
 
 - A clear description of the problem
 - Steps to reproduce
-- Expected vs. actual behavior
+- Expected vs. actual behaviour
 - Go version (`go version`) and OS
 
 ---
