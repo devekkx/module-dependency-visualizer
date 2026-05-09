@@ -13,13 +13,8 @@ export default defineConfig({
       { text: 'Guide', link: '/getting-started' },
       { text: 'Commands', link: '/commands' },
       { text: 'Schema', link: '/schema' },
-      {
-        text: 'v0.5.0',
-        items: [
-          { text: 'Changelog', link: 'https://github.com/devekkx/module-dependency-visualizer/releases' },
-          { text: 'Contributing', link: '/contributing' },
-        ],
-      },
+      { text: 'Changelog', link: 'https://github.com/devekkx/module-dependency-visualizer/releases' },
+      { text: 'Contributing', link: '/contributing' },
     ],
 
     sidebar: [
