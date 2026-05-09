@@ -455,7 +455,7 @@ function resolveId(ref) {
     return typeof ref === 'object' ? ref.id : ref;
 }
 
-// ── Audit ────────────────────────────────────────────────────
+// Audit
 
 async function openAuditPanel() {
     const overlay  = document.getElementById('audit-overlay');

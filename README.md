@@ -23,7 +23,6 @@
 - [Project Structure](#project-structure)
 - [Branch Strategy](#branch-strategy)
 - [CI/CD Pipelines](#cicd-pipelines)
-- [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -430,18 +429,6 @@ checksums.txt
 ### `docs.yml` - Docs (PR touching `website/**`)
 
 Validates the VitePress build on any PR that modifies the `website/` directory. Uploads the built site as an artifact for preview.
-
----
-
-## Roadmap
-
-| Phase | Status | Highlights |
-|---|---|---|
-| 1 - Foundation | ✅ Done | Go provider, JSON schema v1, DOT + Mermaid export |
-| 2 - Agnostic Layer | ✅ Done | NPM/Yarn/PNPM/Bun, Python/pip/Poetry providers |
-| 3 - Interactive UI | ✅ Done | Embedded D3.js web server (`mdv serve`) |
-| 4 - Intelligence | ✅ Done | OSV vulnerability scan, license audit, conflict detection |
-| 5 - Workflow | ✅ Done | `mdv diff`, `mdv docs`, GitHub Actions composite action |
 
 ---
 
