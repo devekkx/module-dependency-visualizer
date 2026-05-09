@@ -4,6 +4,11 @@ on:
   pull_request:
     paths:
       - 'website/**'
+  push:
+    branches:
+      - production
+    paths:
+      - 'website/**'
 
 concurrency:
   group: docs-${{ github.ref }}
@@ -11,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    name: Validate Docs Build
+    name: Build Docs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,3 +39,25 @@ jobs:
           name: docs-dist
           path: website/docs/.vitepress/dist
           retention-days: 1
+
+  deploy:
+    name: Deploy to Vercel
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Deploy
+        run: vercel --prod --yes
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
