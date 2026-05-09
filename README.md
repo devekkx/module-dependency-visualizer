@@ -71,6 +71,26 @@ curl -fsSL https://github.com/devekkx/module-dependency-visualizer/releases/late
 
 Verify checksums with the `checksums.txt` file included in each release.
 
+### Docker
+
+No installation required — mount your project directory and run:
+
+```bash
+# Analyze
+docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv analyze /work
+
+# Export as DOT
+docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv export /work --format dot
+
+# Audit
+docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv audit /work
+
+# Serve (use --no-browser since there is no browser in the container)
+docker run --rm -v $(pwd):/work -p 7777:7777 ghcr.io/devekkx/mdv serve /work --port 7777 --no-browser
+```
+
+Images are published to `ghcr.io/devekkx/mdv` for `linux/amd64` and `linux/arm64`.
+
 ---
 
 ## Quick Start

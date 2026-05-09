@@ -127,8 +127,9 @@ mdv serve <path> [flags]
 
 | Flag | Default | Description |
 |---|---|---|
-| `--port` | `0` (auto-assign) | HTTP port to listen on |
+| `--port`, `-p` | `0` (auto-assign) | HTTP port to listen on |
 | `--audit` | `false` | Include audit data in the UI |
+| `--no-browser` | `false` | Skip opening the browser automatically |
 
 **Example**
 

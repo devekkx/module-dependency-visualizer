@@ -18,6 +18,34 @@ curl -fsSL https://github.com/devekkx/module-dependency-visualizer/releases/late
   | tar -xz -C /usr/local/bin mdv
 ```
 
+### Docker
+
+No Go installation required. Mount your project directory and run:
+
+```bash
+docker pull ghcr.io/devekkx/mdv:latest
+
+# Analyze
+docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv analyze /work
+
+# Export as DOT
+docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv export /work --format dot
+
+# Audit
+docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv audit /work
+
+# Serve — use --no-browser and map a fixed port
+docker run --rm -v $(pwd):/work -p 7777:7777 \
+  ghcr.io/devekkx/mdv serve /work --port 7777 --no-browser
+# → open http://localhost:7777 in your browser
+```
+
+::: tip
+Always use `--no-browser` when running `mdv serve` inside Docker — the container has no browser to open.
+:::
+
+Images are available for `linux/amd64` and `linux/arm64`.
+
 ## Quick Start
 
 ### Analyze a project
