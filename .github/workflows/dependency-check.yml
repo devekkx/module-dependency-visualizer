@@ -28,8 +28,8 @@ jobs:
       - name: Build mdv from source
         run: make build
 
-      - name: Analyze & audit
-        run: ./dist/mdv analyze . --audit --format markdown
+      - name: Analyse & audit
+        run: ./dist/mdv analyse . --audit --format markdown
 
       - name: Diff dependencies
         run: ./dist/mdv diff . --from ${{ github.event.pull_request.base.sha }} || true

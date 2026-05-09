@@ -25,8 +25,8 @@ No Go installation required. Mount your project directory and run:
 ```bash
 docker pull ghcr.io/devekkx/mdv:latest
 
-# Analyze
-docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv analyze /work
+# Analyse
+docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv analyse /work
 
 # Export as DOT
 docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv export /work --format dot
@@ -48,17 +48,17 @@ Images are available for `linux/amd64` and `linux/arm64`.
 
 ## Quick Start
 
-### Analyze a project
+### Analyse a project
 
 ```bash
 # Print a dependency summary table to stdout
-mdv analyze .
+mdv analyse .
 
 # Emit full JSON (schema v1.1)
-mdv analyze . --format json
+mdv analyse . --format json
 
 # Run with a vulnerability and license audit
-mdv analyze . --audit
+mdv analyse . --audit
 ```
 
 ### Visualise in your browser

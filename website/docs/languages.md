@@ -15,7 +15,7 @@
 | Go toolchain on `PATH` | 1.21+ |
 
 ```bash
-mdv analyze /path/to/go-project
+mdv analyse /path/to/go-project
 ```
 
 `go mod graph` is called internally to produce the full module graph including indirect dependencies and `replace` directives.
@@ -42,7 +42,7 @@ The package manager is auto-detected from lock files. No flag or config needed.
 | Node.js on `PATH` | Any (only needed for `npm ls` fallback) |
 
 ```bash
-mdv analyze /path/to/node-project
+mdv analyse /path/to/node-project
 ```
 
 ---
@@ -67,7 +67,7 @@ The tool is auto-detected from lock and config files in priority order.
 | Python on `PATH` | 3.8+ |
 
 ```bash
-mdv analyze /path/to/python-project
+mdv analyse /path/to/python-project
 ```
 
 ---
@@ -80,8 +80,8 @@ If you want to restrict analysis to a specific provider, use `--include` to filt
 
 ```bash
 # Only show Go modules
-mdv analyze . --include "^github.com"
+mdv analyse . --include "^github.com"
 
 # Only show Python packages
-mdv analyze . --include "^pypi:"
+mdv analyse . --include "^pypi:"
 ```

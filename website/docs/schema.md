@@ -1,6 +1,6 @@
 # JSON Schema Reference
 
-`mdv analyze` and `mdv export --format=json` emit a versioned JSON document.
+`mdv analyse` and `mdv export --format=json` emit a versioned JSON document.
 
 Current version: **1.1.0**
 

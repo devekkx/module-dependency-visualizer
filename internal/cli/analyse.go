@@ -16,13 +16,13 @@ import (
 	"github.com/devekkx/module-dependency-visualizer/internal/schema"
 )
 
-func newAnalyzeCmd(deps *Deps) *cobra.Command {
-	var f analyzeFlags
+func newAnalyseCmd(deps *Deps) *cobra.Command {
+	var f analyseFlags
 	var timeout string
 	var runAudit bool
 
 	cmd := &cobra.Command{
-		Use:   "analyze <path>",
+		Use:   "analyse <path>",
 		Short: "Parse dependencies and emit JSON",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -38,7 +38,7 @@ func newAnalyzeCmd(deps *Deps) *cobra.Command {
 
 			g, proj, err := parseProject(ctx, deps, rootPath)
 			if err != nil {
-				return fmt.Errorf("analyze: %w", err)
+				return fmt.Errorf("analyse: %w", err)
 			}
 
 			filtered, err := applyFilters(g, f)
@@ -76,7 +76,7 @@ func newAnalyzeCmd(deps *Deps) *cobra.Command {
 		},
 	}
 
-	addAnalyzeFlags(cmd, &f)
+	addAnalyseFlags(cmd, &f)
 	cmd.Flags().StringVar(&timeout, "timeout", config.DefaultTimeout.String(), "Timeout for dependency resolution")
 	cmd.Flags().BoolVar(&runAudit, "audit", false, "Run security, license, and conflict audit and embed results in output")
 
@@ -84,7 +84,7 @@ func newAnalyzeCmd(deps *Deps) *cobra.Command {
 }
 
 func newExportCmd(deps *Deps) *cobra.Command {
-	var f analyzeFlags
+	var f analyseFlags
 	var format string
 	var timeout string
 
@@ -128,7 +128,7 @@ func newExportCmd(deps *Deps) *cobra.Command {
 		},
 	}
 
-	addAnalyzeFlags(cmd, &f)
+	addAnalyseFlags(cmd, &f)
 	cmd.Flags().StringVarP(&format, "format", "f", "json", "Output format (json, dot, mermaid)")
 	cmd.Flags().StringVar(&timeout, "timeout", config.DefaultTimeout.String(), "Timeout for dependency resolution")
 	_ = cmd.MarkFlagRequired("format")
@@ -152,7 +152,7 @@ func parseProject(ctx context.Context, deps *Deps, rootPath string) (*graph.Grap
 }
 
 // applyFilters applies the user-supplied flags to produce a filtered graph.
-func applyFilters(g *graph.Graph, f analyzeFlags) (*graph.Graph, error) {
+func applyFilters(g *graph.Graph, f analyseFlags) (*graph.Graph, error) {
 	include, err := compilePatterns(f.Include)
 	if err != nil {
 		return nil, err

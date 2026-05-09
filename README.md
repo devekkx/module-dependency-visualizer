@@ -76,8 +76,8 @@ Verify checksums with the `checksums.txt` file included in each release.
 No installation required - mount your project directory and run:
 
 ```bash
-# Analyze
-docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv analyze /work
+# Analyse
+docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv analyse /work
 
 # Export as DOT
 docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv export /work --format dot
@@ -97,7 +97,7 @@ Images are published to `ghcr.io/devekkx/mdv` for `linux/amd64` and `linux/arm64
 
 ```bash
 # Summarise dependencies in your terminal
-mdv analyze .
+mdv analyse .
 
 # Launch the interactive web UI (port is auto-assigned, shown in output)
 mdv serve .
@@ -125,12 +125,12 @@ mdv docs . --output DEPENDENCIES.md --audit
 
 ## Commands
 
-### `mdv analyze`
+### `mdv analyse`
 
 Parse a project and emit a dependency summary.
 
 ```
-mdv analyze <path> [flags]
+mdv analyse <path> [flags]
 ```
 
 | Flag | Default | Description |
@@ -151,7 +151,7 @@ Export the graph to a renderable format.
 mdv export <path> --format <fmt> [flags]
 ```
 
-`--format` is required: `dot`, `mermaid`, or `json`. Accepts the same depth/filter flags as `analyze`.
+`--format` is required: `dot`, `mermaid`, or `json`. Accepts the same depth/filter flags as `analyse`.
 
 ### `mdv audit`
 
@@ -390,7 +390,7 @@ Runs on every pull request targeting `develop`. Posts a single auto-updating com
 
 | Job | What it does |
 |---|---|
-| **Dependency Audit** | `mdv analyze --audit`, dependency diff against the base SHA, `govulncheck` (informational), generates `DEPENDENCIES.md`, posts/updates PR comment |
+| **Dependency Audit** | `mdv analyse --audit`, dependency diff against the base SHA, `govulncheck` (informational), generates `DEPENDENCIES.md`, posts/updates PR comment |
 | **Security Scan** | `gosec` in SARIF mode - results uploaded to GitHub Security tab |
 
 ### `promote.yml` - Promote to Production (PR → `production`)

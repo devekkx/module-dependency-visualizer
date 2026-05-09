@@ -11,12 +11,12 @@ These flags are available on every command:
 
 ---
 
-## `mdv analyze`
+## `mdv analyse`
 
 Parse a project and emit a dependency summary.
 
 ```bash
-mdv analyze <path> [flags]
+mdv analyse <path> [flags]
 ```
 
 **Flags**
@@ -35,16 +35,16 @@ mdv analyze <path> [flags]
 
 ```bash
 # Table summary (default)
-mdv analyze .
+mdv analyse .
 
 # Full JSON snapshot
-mdv analyze . --format json -o snapshot.json
+mdv analyse . --format json -o snapshot.json
 
 # Direct deps only, depth 2, with audit
-mdv analyze . --no-indirect --depth 2 --audit
+mdv analyse . --no-indirect --depth 2 --audit
 
 # Filter to a specific vendor
-mdv analyze . --include "^github.com/spf13"
+mdv analyse . --include "^github.com/spf13"
 ```
 
 ---

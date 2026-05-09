@@ -1,5 +1,5 @@
 name: mdv - Module Dependency Visualizer
-description: Analyze dependencies, detect vulnerabilities, and report changes between refs.
+description: Analyse dependencies, detect vulnerabilities, and report changes between refs.
 
 inputs:
   path:
@@ -7,7 +7,7 @@ inputs:
     required: false
     default: "."
   format:
-    description: Output format for the analyze command (table, json, markdown).
+    description: Output format for the analyse command (table, json, markdown).
     required: false
     default: table
   audit:
@@ -64,14 +64,14 @@ runs:
         fi
         mdv version
 
-    - name: Analyze dependencies
+    - name: Analyse dependencies
       shell: bash
       run: |
         ARGS="${{ inputs.path }}"
         if [ "${{ inputs.audit }}" = "true" ]; then
           ARGS="$ARGS --audit"
         fi
-        mdv analyze $ARGS --format ${{ inputs.format }}
+        mdv analyse $ARGS --format ${{ inputs.format }}
 
     - name: Diff dependencies
       if: inputs.diff != ''

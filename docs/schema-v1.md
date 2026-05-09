@@ -1,6 +1,6 @@
 # JSON Schema v1.1.0 Reference
 
-`mdv analyze` and `mdv export --format=json` emit a versioned JSON document conforming to this schema.
+`mdv analyse` and `mdv export --format=json` emit a versioned JSON document conforming to this schema.
 
 ## Top-level Structure
 
