@@ -6,10 +6,6 @@ inputs:
     description: Path to the project root (relative to the repository root).
     required: false
     default: "."
-  format:
-    description: Output format for the analyse command (table, json, markdown).
-    required: false
-    default: table
   audit:
     description: Run vulnerability and license audit.
     required: false
@@ -71,7 +67,7 @@ runs:
         if [ "${{ inputs.audit }}" = "true" ]; then
           ARGS="$ARGS --audit"
         fi
-        mdv analyse $ARGS --format ${{ inputs.format }}
+        mdv analyse $ARGS
 
     - name: Diff dependencies
       if: inputs.diff != ''

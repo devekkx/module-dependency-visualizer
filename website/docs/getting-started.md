@@ -51,13 +51,10 @@ Images are available for `linux/amd64` and `linux/arm64`.
 ### Analyse a project
 
 ```bash
-# Print a dependency summary table to stdout
+# Emit JSON (schema v1.1) to stdout
 mdv analyse .
 
-# Emit full JSON (schema v1.1)
-mdv analyse . --format json
-
-# Run with a vulnerability and license audit
+# Run with a vulnerability and licence audit
 mdv analyse . --audit
 ```
 

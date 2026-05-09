@@ -1,3 +1,5 @@
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
 //  MDV - Module Dependency Visualiser  (D3.js v7)
 const CFG = {
     nodeRadius:      8,
@@ -8,7 +10,7 @@ const CFG = {
     alphaDecay:      0.028,
     transitionMs:    250,
     colors: {
-        main:    '#e74c3c',
+        main:    '#004e2c',
         module:  '#2980b9',
         dev:     '#7f8c8d',
         vuln:    '#e53e3e',

@@ -37,8 +37,7 @@ jobs:
 | Input | Default | Description |
 |---|---|---|
 | `path` | `.` | Path to the project root (relative to repo root) |
-| `format` | `table` | Output format for the analyse step: `table`, `json`, `markdown` |
-| `audit` | `false` | Run vulnerability and license audit |
+| `audit` | `false` | Run vulnerability and licence audit |
 | `diff` | `""` | Show dependency changes since this ref (e.g. `HEAD~1`, `main`) |
 | `generate-docs` | `false` | Write `DEPENDENCIES.md` to `<path>/DEPENDENCIES.md` |
 | `version` | `latest` | mdv release tag to install (e.g. `v0.3.0`) |

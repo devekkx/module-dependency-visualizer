@@ -8,12 +8,13 @@ These flags are available on every command:
 |---|---|---|
 | `--log-level` | `warn` | Log verbosity: `debug`, `info`, `warn`, `error` |
 | `--timeout` | `30s` | Timeout for external tool invocations |
+| `--no-color` | `false` | Disable colour in log output |
 
 ---
 
 ## `mdv analyse`
 
-Parse a project and emit a dependency summary.
+Parse a project and emit the dependency graph as JSON. Output is always JSON — use [`mdv export`](#mdv-export) for other formats.
 
 ```bash
 mdv analyse <path> [flags]
@@ -24,21 +25,20 @@ mdv analyse <path> [flags]
 | Flag | Default | Description |
 |---|---|---|
 | `-o, --output` | `-` (stdout) | Write output to a file |
-| `--format` | `table` | Output format: `table`, `json`, `markdown` |
 | `-d, --depth` | `-1` (unlimited) | Maximum dependency depth |
 | `--include` | - | Keep only modules matching this regex (repeatable) |
 | `--exclude` | - | Remove modules matching this regex (repeatable) |
 | `--no-indirect` | `false` | Omit transitive dependencies |
-| `--audit` | `false` | Embed vulnerability, license, and conflict audit in output |
+| `--audit` | `false` | Embed vulnerability, licence, and conflict audit in output |
 
 **Examples**
 
 ```bash
-# Table summary (default)
+# JSON to stdout
 mdv analyse .
 
-# Full JSON snapshot
-mdv analyse . --format json -o snapshot.json
+# Save snapshot to file
+mdv analyse . -o snapshot.json
 
 # Direct deps only, depth 2, with audit
 mdv analyse . --no-indirect --depth 2 --audit
