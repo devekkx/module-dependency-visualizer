@@ -40,12 +40,6 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Releases',
-        items: [
-          { text: 'Versioning', link: '/versioning' },
-        ],
-      },
-      {
         text: 'Contributing',
         items: [
           { text: 'Contributing Guide', link: '/contributing' },
