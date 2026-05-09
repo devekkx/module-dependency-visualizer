@@ -8,7 +8,7 @@
 
 ```bash
 # Install
-go install module-dependency-visualizer/cmd/mdv@latest
+go install github.com/devekkx/module-dependency-visualizer/cmd/mdv@latest
 
 # Analyze a Go project
 mdv analyze .

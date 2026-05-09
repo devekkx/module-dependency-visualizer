@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <!-- Background -->
+  <rect width="400" height="300" rx="16" fill="#f6f8ff"/>
+
+  <!-- Root node -->
+  <circle cx="200" cy="60" r="22" fill="#646cff" opacity="0.9"/>
+  <text x="200" y="65" text-anchor="middle" fill="white" font-size="11" font-family="monospace">myapp</text>
+
+  <!-- Level 1 nodes -->
+  <circle cx="100" cy="150" r="18" fill="#3b82f6" opacity="0.85"/>
+  <text x="100" y="155" text-anchor="middle" fill="white" font-size="9" font-family="monospace">cobra</text>
+
+  <circle cx="200" cy="150" r="18" fill="#3b82f6" opacity="0.85"/>
+  <text x="200" y="155" text-anchor="middle" fill="white" font-size="9" font-family="monospace">zap</text>
+
+  <circle cx="300" cy="150" r="18" fill="#3b82f6" opacity="0.85"/>
+  <text x="300" y="155" text-anchor="middle" fill="white" font-size="9" font-family="monospace">viper</text>
+
+  <!-- Level 2 nodes -->
+  <circle cx="60" cy="240" r="14" fill="#aac8ff"/>
+  <text x="60" y="244" text-anchor="middle" fill="#1e293b" font-size="8" font-family="monospace">pflag</text>
+
+  <circle cx="140" cy="240" r="14" fill="#aac8ff"/>
+  <text x="140" y="244" text-anchor="middle" fill="#1e293b" font-size="8" font-family="monospace">term</text>
+
+  <circle cx="260" cy="240" r="14" fill="#aac8ff"/>
+  <text x="260" y="244" text-anchor="middle" fill="#1e293b" font-size="8" font-family="monospace">cast</text>
+
+  <circle cx="340" cy="240" r="14" fill="#aac8ff"/>
+  <text x="340" y="244" text-anchor="middle" fill="#1e293b" font-size="8" font-family="monospace">mapstr</text>
+
+  <!-- Edges root → L1 -->
+  <line x1="200" y1="82" x2="112" y2="133" stroke="#646cff" stroke-width="2" opacity="0.6"/>
+  <line x1="200" y1="82" x2="200" y2="132" stroke="#646cff" stroke-width="2" opacity="0.6"/>
+  <line x1="200" y1="82" x2="288" y2="133" stroke="#646cff" stroke-width="2" opacity="0.6"/>
+
+  <!-- Edges L1 → L2 -->
+  <line x1="90" y1="167" x2="68" y2="226" stroke="#3b82f6" stroke-width="1.5" opacity="0.5"/>
+  <line x1="110" y1="167" x2="132" y2="226" stroke="#3b82f6" stroke-width="1.5" opacity="0.5"/>
+  <line x1="290" y1="167" x2="268" y2="226" stroke="#3b82f6" stroke-width="1.5" opacity="0.5"/>
+  <line x1="310" y1="167" x2="332" y2="226" stroke="#3b82f6" stroke-width="1.5" opacity="0.5"/>
+</svg>
