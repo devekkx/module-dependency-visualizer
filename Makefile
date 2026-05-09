@@ -1,6 +1,6 @@
 BINARY     := mdv
 BUILD_DIR  := dist
-PKG        := module-dependency-visualizer
+PKG        := github.com/devekkx/module-dependency-visualizer
 CMD        := ./cmd/mdv
 
 VERSION    ?= dev
