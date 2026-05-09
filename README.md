@@ -23,6 +23,7 @@
 - [Project Structure](#project-structure)
 - [Branch Strategy](#branch-strategy)
 - [CI/CD Pipelines](#cicd-pipelines)
+- [Versioning](#versioning)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
@@ -407,6 +408,68 @@ checksums.txt
 ### `docs.yml` — Docs (PR touching `website/**`)
 
 Validates the VitePress build on any PR that modifies the `website/` directory. Uploads the built site as an artifact for preview.
+
+---
+
+## Versioning
+
+`mdv` uses [Semantic Versioning](https://semver.org). The version string, git commit hash, and build timestamp are **baked into the binary at compile time** via Go's `-ldflags` linker flag — there is no separate version file.
+
+### How it works
+
+Three package-level variables in `cmd/mdv/main.go` hold the defaults for local builds:
+
+```go
+var (
+    version   = "dev"
+    commit    = "none"
+    buildDate = "unknown"
+)
+```
+
+The linker overwrites them at compile time:
+
+```bash
+go build -ldflags "\
+  -X 'github.com/devekkx/module-dependency-visualizer/internal/config.version=v1.2.3' \
+  -X 'github.com/devekkx/module-dependency-visualizer/internal/config.commit=abc1234' \
+  -X 'github.com/devekkx/module-dependency-visualizer/internal/config.buildDate=2024-11-01T10:00:00Z'"
+```
+
+The Makefile handles this automatically. `COMMIT` and `BUILD_DATE` are derived from git and the system clock; `VERSION` defaults to `dev` unless you pass it:
+
+```bash
+make build                  # version=dev  commit=<sha>  built=<timestamp>
+make build VERSION=v1.2.3   # version=v1.2.3  commit=<sha>  built=<timestamp>
+```
+
+### Cutting a release
+
+The git tag is the single source of truth. The release pipeline reads `github.ref_name` and passes it as `VERSION`:
+
+```bash
+git checkout production
+git tag v1.2.3
+git push origin v1.2.3
+# → release.yml fires, builds all platforms with VERSION=v1.2.3
+```
+
+Verify a binary's version at any time:
+
+```bash
+mdv version
+# version=v1.2.3 commit=abc1234 built=2024-11-01T10:00:00Z
+```
+
+### Version format
+
+Tags must follow `vMAJOR.MINOR.PATCH` (e.g. `v1.2.3`). The release workflow is only triggered by tags matching `v*.*.*`.
+
+| Change type | Example | When to use |
+|---|---|---|
+| Patch (`PATCH`) | `v1.2.3` → `v1.2.4` | Bug fixes, internal refactors |
+| Minor (`MINOR`) | `v1.2.3` → `v1.3.0` | New commands, new flags, new export formats |
+| Major (`MAJOR`) | `v1.2.3` → `v2.0.0` | Breaking CLI changes, schema version bumps |
 
 ---
 

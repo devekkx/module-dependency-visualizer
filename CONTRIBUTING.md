@@ -38,11 +38,11 @@ go test ./...
 
 ## How to Contribute
 
-1. **Fork** the repository and create your branch from `main`.
+1. **Fork** the repository and create your branch from `develop`.
 2. **Make your changes** — keep them focused and minimal.
 3. **Write or update tests** for any logic you add or change.
 4. **Run the test suite** to confirm nothing is broken.
-5. **Open a pull request** against `main`.
+5. **Open a pull request** against `develop`.
 
 ---
 
