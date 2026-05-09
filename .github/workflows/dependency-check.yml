@@ -1,46 +1,93 @@
 name: Dependency Check
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "go.mod"
-      - "go.sum"
-      - "package.json"
-      - "package-lock.json"
-      - "requirements*.txt"
-      - "pyproject.toml"
   pull_request:
-    paths:
-      - "go.mod"
-      - "go.sum"
-      - "package.json"
-      - "package-lock.json"
-      - "requirements*.txt"
-      - "pyproject.toml"
+    branches: [testing]
+
+concurrency:
+  group: dep-check-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  dependency-check:
-    name: Analyze & Audit Dependencies
+  audit:
+    name: Dependency Audit
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
-      - name: Run mdv
-        uses: ./.github/actions/mdv
+      - uses: actions/setup-go@v5
         with:
-          path: .
-          audit: "true"
-          diff: HEAD~1
-          generate-docs: "true"
-          format: markdown
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build mdv from source
+        run: make build
+
+      - name: Analyse & audit
+        run: ./dist/mdv analyse . --audit
+
+      - name: Diff dependencies
+        run: ./dist/mdv diff . --from ${{ github.event.pull_request.base.sha }} || true
+
+      - name: Generate DEPENDENCIES.md
+        run: ./dist/mdv docs . --output DEPENDENCIES.md --audit
+
+      - name: govulncheck
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          govulncheck ./... 2>&1 | tee govulncheck.txt || true
+
+      - name: Post PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const sections = [];
+
+            sections.push('## Dependency Audit\n');
+
+            if (fs.existsSync('DEPENDENCIES.md')) {
+              sections.push(fs.readFileSync('DEPENDENCIES.md', 'utf8'));
+            } else {
+              sections.push('_No DEPENDENCIES.md generated._\n');
+            }
+
+            if (fs.existsSync('govulncheck.txt')) {
+              const vuln = fs.readFileSync('govulncheck.txt', 'utf8').trim();
+              sections.push('\n### govulncheck\n\n```\n' + vuln + '\n```\n');
+            }
+
+            let body = sections.join('\n');
+            if (body.length > 65000) body = body.slice(0, 65000) + '\n\n...(truncated)';
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c =>
+              c.user.login === 'github-actions[bot]' && c.body.startsWith('## Dependency Audit')
+            );
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
 
       - name: Upload DEPENDENCIES.md
         uses: actions/upload-artifact@v4
@@ -48,12 +95,30 @@ jobs:
           name: dependencies-doc
           path: DEPENDENCIES.md
           if-no-files-found: ignore
+          retention-days: 30
 
-      - name: Commit updated DEPENDENCIES.md
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add DEPENDENCIES.md
-          git diff --cached --quiet || git commit -m "chore: update DEPENDENCIES.md [skip ci]"
-          git push
+  security-scan:
+    name: Security Scan (gosec)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: gosec
+        uses: securego/gosec@v2.21.4
+        continue-on-error: true
+        with:
+          args: '-fmt sarif -out gosec.sarif ./...'
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: gosec.sarif

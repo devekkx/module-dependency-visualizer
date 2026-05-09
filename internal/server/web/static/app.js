@@ -1,3 +1,5 @@
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
 //  MDV - Module Dependency Visualiser  (D3.js v7)
 const CFG = {
     nodeRadius:      8,
@@ -8,7 +10,7 @@ const CFG = {
     alphaDecay:      0.028,
     transitionMs:    250,
     colors: {
-        main:    '#e74c3c',
+        main:    '#004e2c',
         module:  '#2980b9',
         dev:     '#7f8c8d',
         vuln:    '#e53e3e',
@@ -71,19 +73,19 @@ async function init() {
 }
 
 function applyMeta(data) {
-    const meta = data.metadata || {};
+    const proj = data.project || {};
     const total = state.allNodes.length;
     const edges = state.allLinks.length;
 
     document.getElementById('stat-nodes').textContent = `${total} node${total !== 1 ? 's' : ''}`;
     document.getElementById('stat-edges').textContent = `${edges} edge${edges !== 1 ? 's' : ''}`;
 
-    const name = meta.project_name || '';
-    const lang = meta.language || '';
+    const name = proj.name || '';
+    const lang = proj.language || '';
 
     if (name) {
         document.getElementById('project-name').textContent = name;
-        document.title = `MDV — ${name}`;
+        document.title = `MDV - ${name}`;
     }
     if (lang) {
         const badge = document.getElementById('lang-badge');
@@ -218,6 +220,7 @@ function render() {
     const { nodes, links } = getVisible();
     const visCount = nodes.length;
 
+    document.getElementById('empty-state').classList.toggle('hidden', visCount > 0);
     document.getElementById('stat-visible').textContent =
         visCount !== state.allNodes.length ? `${visCount} visible` : '';
 
@@ -381,8 +384,8 @@ function showDetail(d) {
         .filter(Boolean);
 
     document.getElementById('detail-name').textContent    = d.name;
-    document.getElementById('detail-version').textContent = d.version  || '—';
-    document.getElementById('detail-kind').textContent    = d.kind     || '—';
+    document.getElementById('detail-version').textContent = d.version  || '-';
+    document.getElementById('detail-kind').textContent    = d.kind     || '-';
     document.getElementById('detail-indirect').textContent = d.indirect ? 'Yes' : 'No';
 
     // License
@@ -455,7 +458,7 @@ function resolveId(ref) {
     return typeof ref === 'object' ? ref.id : ref;
 }
 
-// ── Audit ────────────────────────────────────────────────────
+// Audit
 
 async function openAuditPanel() {
     const overlay  = document.getElementById('audit-overlay');
@@ -469,7 +472,7 @@ async function openAuditPanel() {
     results.classList.add('hidden');
 
     if (state.audit) {
-        // Already loaded — just show results.
+        // Already loaded - just show results.
         renderAuditResults(state.audit);
         loading.classList.add('hidden');
         results.classList.remove('hidden');
@@ -539,7 +542,7 @@ function renderAuditResults(data) {
                     <a class="vuln-id" href="${v.link || '#'}" target="_blank" rel="noopener">${v.id}</a>
                     <span class="sev-badge sev-${v.severity || 'UNKNOWN'}">${v.severity || 'UNKNOWN'}</span>
                 </div>
-                <div class="vuln-summary">${v.summary || '—'}</div>
+                <div class="vuln-summary">${v.summary || '-'}</div>
                 <div class="vuln-module">${v.node_id}</div>
                 ${v.fixed_in ? `<div class="vuln-fix">Fix: upgrade to ${v.fixed_in}</div>` : ''}
             </div>

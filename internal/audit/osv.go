@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 
@@ -99,7 +100,10 @@ func (s *osvScanner) Scan(ctx context.Context, g *graph.Graph, ecosystem string)
 
 	var entries []entry
 	for _, n := range g.Nodes() {
-		if n.Kind == graph.NodeKindMain || n.Version == "" {
+		if n.Kind == graph.NodeKindMain || n.Version == "" || n.Name == "" {
+			continue
+		}
+		if !isExactVersion(n.Version) {
 			continue
 		}
 		entries = append(entries, entry{
@@ -139,7 +143,8 @@ func (s *osvScanner) Scan(ctx context.Context, g *graph.Graph, ecosystem string)
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("audit/osv: unexpected status %d", resp.StatusCode)
+		msg, _ := io.ReadAll(io.LimitReader(resp.Body, 512))
+		return nil, fmt.Errorf("audit/osv: unexpected status %d: %s", resp.StatusCode, strings.TrimSpace(string(msg)))
 	}
 
 	var batchResp osvBatchResp
@@ -176,6 +181,28 @@ func osvSeverity(v osvVuln) string {
 		}
 	}
 	return "UNKNOWN"
+}
+
+// isExactVersion reports whether v looks like an exact, queryable version.
+// It rejects semver range specifiers, workspace/file/git protocols, and
+// anything else OSV's batch endpoint would reject with a 400.
+func isExactVersion(v string) bool {
+	if v == "" {
+		return false
+	}
+	// Range operators and wildcard
+	if strings.ContainsAny(v[:1], "^~><*=") {
+		return false
+	}
+	// Protocol-style versions: workspace:*, file:../, git+https:, etc.
+	if strings.Contains(v, ":") {
+		return false
+	}
+	// npm "latest", "next", unresolved tags
+	if strings.ContainsAny(v, " |&") {
+		return false
+	}
+	return true
 }
 
 // osvFixedVersion returns the earliest "fixed" version from affected ranges.

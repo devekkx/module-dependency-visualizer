@@ -12,7 +12,7 @@ import (
 // TestExecute_NoProviders verifies that Execute() runs without panicking.
 // With no providers registered the binary exits with a user error code.
 func TestExecute_RunsWithoutPanic(t *testing.T) {
-	// ExecuteWithDeps with empty registries — unknown command path.
+	// ExecuteWithDeps with empty registries - unknown command path.
 	deps := buildTestDeps(t)
 	code := cli.ExecuteWithDeps(deps, []string{"version"})
 	if code != 0 {
@@ -20,7 +20,7 @@ func TestExecute_RunsWithoutPanic(t *testing.T) {
 	}
 }
 
-func TestAnalyze_NoProviderForPath(t *testing.T) {
+func TestAnalyse_NoProviderForPath(t *testing.T) {
 	deps := buildTestDeps(t)
 	// Point at a temp dir with no go.mod → GoProvider won't detect it, but
 	// the stub provider in buildTestDeps always detects, so use a deps set
@@ -36,18 +36,18 @@ func TestAnalyze_NoProviderForPath(t *testing.T) {
 	}
 }
 
-func TestAnalyze_InvalidIncludeRegex(t *testing.T) {
+func TestAnalyse_InvalidIncludeRegex(t *testing.T) {
 	deps := buildTestDeps(t)
 	// Invalid regex in --include should fail early.
-	code := cli.ExecuteWithDeps(deps, []string{"analyze", ".", "--include", "["})
+	code := cli.ExecuteWithDeps(deps, []string{"analyse", ".", "--include", "["})
 	if code == 0 {
 		t.Error("expected non-zero exit for invalid --include regex")
 	}
 }
 
-func TestAnalyze_InvalidExcludeRegex(t *testing.T) {
+func TestAnalyse_InvalidExcludeRegex(t *testing.T) {
 	deps := buildTestDeps(t)
-	code := cli.ExecuteWithDeps(deps, []string{"analyze", ".", "--exclude", "["})
+	code := cli.ExecuteWithDeps(deps, []string{"analyse", ".", "--exclude", "["})
 	if code == 0 {
 		t.Error("expected non-zero exit for invalid --exclude regex")
 	}
@@ -61,9 +61,9 @@ func TestExport_InvalidExcludeRegex(t *testing.T) {
 	}
 }
 
-func TestAnalyze_InvalidTimeout(t *testing.T) {
+func TestAnalyse_InvalidTimeout(t *testing.T) {
 	deps := buildTestDeps(t)
-	code := cli.ExecuteWithDeps(deps, []string{"analyze", ".", "--timeout", "notaduration"})
+	code := cli.ExecuteWithDeps(deps, []string{"analyse", ".", "--timeout", "notaduration"})
 	if code == 0 {
 		t.Error("expected non-zero exit for invalid timeout")
 	}
@@ -97,19 +97,19 @@ func TestLogLevel_Invalid(t *testing.T) {
 	}
 }
 
-func TestAnalyze_OutputToFile(t *testing.T) {
+func TestAnalyse_OutputToFile(t *testing.T) {
 	deps := buildTestDeps(t)
 	outPath := t.TempDir() + "/out.json"
-	code := cli.ExecuteWithDeps(deps, []string{"analyze", ".", "--output", outPath})
+	code := cli.ExecuteWithDeps(deps, []string{"analyse", ".", "--output", outPath})
 	if code != 0 {
-		t.Errorf("analyze --output file exit code = %d; want 0", code)
+		t.Errorf("analyse --output file exit code = %d; want 0", code)
 	}
 }
 
-func TestAnalyze_OutputInvalidPath(t *testing.T) {
+func TestAnalyse_OutputInvalidPath(t *testing.T) {
 	deps := buildTestDeps(t)
 	// Write to a path inside a non-existent directory.
-	code := cli.ExecuteWithDeps(deps, []string{"analyze", ".", "--output", "/nonexistent/dir/out.json"})
+	code := cli.ExecuteWithDeps(deps, []string{"analyse", ".", "--output", "/nonexistent/dir/out.json"})
 	if code == 0 {
 		t.Error("expected non-zero exit when output path is invalid")
 	}
@@ -135,19 +135,19 @@ func TestVersion_OutputToBuffer(t *testing.T) {
 	}
 }
 
-func TestAnalyze_WithDepthFlag(t *testing.T) {
+func TestAnalyse_WithDepthFlag(t *testing.T) {
 	deps := buildTestDeps(t)
-	code := cli.ExecuteWithDeps(deps, []string{"analyze", ".", "--depth", "1"})
+	code := cli.ExecuteWithDeps(deps, []string{"analyse", ".", "--depth", "1"})
 	if code != 0 {
-		t.Errorf("analyze --depth 1 exit code = %d; want 0", code)
+		t.Errorf("analyse --depth 1 exit code = %d; want 0", code)
 	}
 }
 
-func TestAnalyze_NoIndirectFlag(t *testing.T) {
+func TestAnalyse_NoIndirectFlag(t *testing.T) {
 	deps := buildTestDeps(t)
-	code := cli.ExecuteWithDeps(deps, []string{"analyze", ".", "--no-indirect"})
+	code := cli.ExecuteWithDeps(deps, []string{"analyse", ".", "--no-indirect"})
 	if code != 0 {
-		t.Errorf("analyze --no-indirect exit code = %d; want 0", code)
+		t.Errorf("analyse --no-indirect exit code = %d; want 0", code)
 	}
 }
 

@@ -205,7 +205,7 @@ func parsePoetryLockPkgs(data []byte) ([]poetryPkg, error) {
 			continue
 		}
 
-		// Nested array-of-tables that is NOT [[package]] — skip section.
+		// Nested array-of-tables that is NOT [[package]] - skip section.
 		if strings.HasPrefix(trimmed, "[[") {
 			inDeps = false
 			continue

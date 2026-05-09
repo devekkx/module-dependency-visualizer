@@ -102,7 +102,7 @@ func TestBuilder_Build_ImmutableNodes(t *testing.T) {
 	nodes[0].Metadata["k"] = "mutated"
 	fresh := g.Nodes()
 	if fresh[0].Metadata["k"] != "v" {
-		t.Error("Nodes() returned a mutable reference — immutability violated")
+		t.Error("Nodes() returned a mutable reference - immutability violated")
 	}
 }
 

@@ -93,7 +93,7 @@ func TestAnalyze_WritesJSON(t *testing.T) {
 	}
 	tmpFile.Close()
 
-	code := cli.ExecuteWithDeps(deps, []string{"analyze", ".", "--output", tmpFile.Name()})
+	code := cli.ExecuteWithDeps(deps, []string{"analyse", ".", "--output", tmpFile.Name()})
 	if code != 0 {
 		t.Errorf("exit code = %d; want 0", code)
 	}
@@ -103,7 +103,7 @@ func TestAnalyze_WritesJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !strings.Contains(string(data), "schema_version") {
-		t.Error("analyze output missing schema_version")
+		t.Error("analyse output missing schema_version")
 	}
 }
 

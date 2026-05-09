@@ -8,8 +8,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// analyzeFlags holds the flags shared by the analyze and export subcommands.
-type analyzeFlags struct {
+// analyseFlags holds the flags shared by the analyse and export subcommands.
+type analyseFlags struct {
 	Output     string
 	Depth      int
 	Include    []string
@@ -18,7 +18,7 @@ type analyzeFlags struct {
 	Timeout    time.Duration
 }
 
-func addAnalyzeFlags(cmd *cobra.Command, f *analyzeFlags) {
+func addAnalyseFlags(cmd *cobra.Command, f *analyseFlags) {
 	cmd.Flags().StringVarP(&f.Output, "output", "o", "-", `Output path ("-" for stdout)`)
 	cmd.Flags().IntVarP(&f.Depth, "depth", "d", -1, "Max dependency depth (-1 = unlimited)")
 	cmd.Flags().StringArrayVar(&f.Include, "include", nil, "Include only modules matching regex (repeatable)")

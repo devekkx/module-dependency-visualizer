@@ -8,15 +8,16 @@ These flags are available on every command:
 |---|---|---|
 | `--log-level` | `warn` | Log verbosity: `debug`, `info`, `warn`, `error` |
 | `--timeout` | `30s` | Timeout for external tool invocations |
+| `--no-color` | `false` | Disable colour in log output |
 
 ---
 
-## `mdv analyze`
+## `mdv analyse`
 
-Parse a project and emit a dependency summary.
+Parse a project and emit the dependency graph as JSON. Output is always JSON — use [`mdv export`](#mdv-export) for other formats.
 
 ```bash
-mdv analyze <path> [flags]
+mdv analyse <path> [flags]
 ```
 
 **Flags**
@@ -24,27 +25,26 @@ mdv analyze <path> [flags]
 | Flag | Default | Description |
 |---|---|---|
 | `-o, --output` | `-` (stdout) | Write output to a file |
-| `--format` | `table` | Output format: `table`, `json`, `markdown` |
 | `-d, --depth` | `-1` (unlimited) | Maximum dependency depth |
-| `--include` | — | Keep only modules matching this regex (repeatable) |
-| `--exclude` | — | Remove modules matching this regex (repeatable) |
+| `--include` | - | Keep only modules matching this regex (repeatable) |
+| `--exclude` | - | Remove modules matching this regex (repeatable) |
 | `--no-indirect` | `false` | Omit transitive dependencies |
-| `--audit` | `false` | Embed vulnerability, license, and conflict audit in output |
+| `--audit` | `false` | Embed vulnerability, licence, and conflict audit in output |
 
 **Examples**
 
 ```bash
-# Table summary (default)
-mdv analyze .
+# JSON to stdout
+mdv analyse .
 
-# Full JSON snapshot
-mdv analyze . --format json -o snapshot.json
+# Save snapshot to file
+mdv analyse . -o snapshot.json
 
 # Direct deps only, depth 2, with audit
-mdv analyze . --no-indirect --depth 2 --audit
+mdv analyse . --no-indirect --depth 2 --audit
 
 # Filter to a specific vendor
-mdv analyze . --include "^github.com/spf13"
+mdv analyse . --include "^github.com/spf13"
 ```
 
 ---
@@ -61,11 +61,11 @@ mdv export <path> --format <fmt> [flags]
 
 | Flag | Default | Description |
 |---|---|---|
-| `--format` | — | **Required.** `dot`, `mermaid`, or `json` |
+| `--format` | - | **Required.** `dot`, `mermaid`, or `json` |
 | `-o, --output` | `-` (stdout) | Write output to a file |
 | `-d, --depth` | `-1` | Maximum dependency depth |
-| `--include` | — | Include filter (regex, repeatable) |
-| `--exclude` | — | Exclude filter (regex, repeatable) |
+| `--include` | - | Include filter (regex, repeatable) |
+| `--exclude` | - | Exclude filter (regex, repeatable) |
 | `--no-indirect` | `false` | Omit indirect dependencies |
 
 **Examples**
@@ -96,8 +96,8 @@ mdv audit <path>
 
 The audit checks:
 - **CVEs** via the [OSV database](https://osv.dev) for each dependency version
-- **License compatibility** — flags non-permissive or conflicting licenses
-- **Version conflicts** — detects when the same package is required at multiple incompatible versions
+- **License compatibility** - flags non-permissive or conflicting licenses
+- **Version conflicts** - detects when the same package is required at multiple incompatible versions
 
 **Example output**
 
@@ -109,7 +109,7 @@ License issues   1 (GPL-3.0 in MIT project)
 Conflicts        0
 
 [CRITICAL] github.com/foo/bar@v1.2.3
-  CVE-2024-12345 — Remote code execution via malformed input
+  CVE-2024-12345 - Remote code execution via malformed input
   Fix: upgrade to v1.2.4
 ```
 
@@ -127,14 +127,17 @@ mdv serve <path> [flags]
 
 | Flag | Default | Description |
 |---|---|---|
-| `--port` | `7777` | HTTP port to listen on |
-| `--audit` | `false` | Include audit data in the UI |
+| `--port`, `-p` | `0` (auto-assign) | HTTP port to listen on |
+| `--no-browser` | `false` | Skip opening the browser automatically |
 
 **Example**
 
 ```bash
-mdv serve . --audit
-# → http://localhost:7777
+# Port is auto-assigned - the chosen address is printed to stdout
+mdv serve .
+
+# Use a fixed port
+mdv serve . --port 7777
 ```
 
 The web UI supports:
@@ -157,8 +160,10 @@ mdv diff <path> [flags]
 
 | Flag | Default | Description |
 |---|---|---|
-| `--from` | — | **Required.** Base git ref (branch, tag, or commit SHA) |
-| `--to` | `HEAD` | Target ref to compare against |
+| `--from` | `HEAD~1` | Base git ref (branch, tag, or commit SHA) |
+| `--to` | - (working tree) | Target ref to compare against |
+| `-f, --format` | `table` | Output format: `table`, `json`, `markdown` |
+| `-o, --output` | `-` (stdout) | Write output to a file |
 
 **Example output**
 
@@ -206,7 +211,7 @@ mdv docs <path> [flags]
 mdv docs . --output DEPENDENCIES.md --audit
 ```
 
-The generated file includes a dependency table, stats, and optional audit findings — suitable for committing to the repository or attaching to a release.
+The generated file includes a dependency table, stats, and optional audit findings - suitable for committing to the repository or attaching to a release.
 
 ---
 

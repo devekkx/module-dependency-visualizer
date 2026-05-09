@@ -1,6 +1,6 @@
 # Output Formats
 
-`mdv export` and `mdv analyze` support three output formats.
+`mdv analyse` always outputs JSON. `mdv export` supports three output formats.
 
 ---
 
@@ -9,7 +9,7 @@
 The JSON format is the canonical, machine-readable representation of the dependency graph. It is the source format that powers all other exporters.
 
 ```bash
-mdv analyze . --format json
+mdv analyse .
 mdv export . --format json -o snapshot.json
 ```
 

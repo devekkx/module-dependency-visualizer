@@ -2,7 +2,7 @@
 
 ## Installation
 
-### From Source (Go 1.21+)
+### From Source (Go 1.22+)
 
 ```bash
 go install github.com/devekkx/module-dependency-visualizer/cmd/mdv@latest
@@ -18,26 +18,54 @@ curl -fsSL https://github.com/devekkx/module-dependency-visualizer/releases/late
   | tar -xz -C /usr/local/bin mdv
 ```
 
-## Quick Start
+### Docker
 
-### Analyze a project
+No Go installation required. Mount your project directory and run:
 
 ```bash
-# Print a dependency summary table to stdout
-mdv analyze .
+docker pull ghcr.io/devekkx/mdv:latest
 
-# Emit full JSON (schema v1.1)
-mdv analyze . --format json
+# Analyse
+docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv analyse /work
 
-# Run with a vulnerability and license audit
-mdv analyze . --audit
+# Export as DOT
+docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv export /work --format dot
+
+# Audit
+docker run --rm -v $(pwd):/work ghcr.io/devekkx/mdv audit /work
+
+# Serve - use --no-browser and map a fixed port
+docker run --rm -v $(pwd):/work -p 7777:7777 \
+  ghcr.io/devekkx/mdv serve /work --port 7777 --no-browser
+# → open http://localhost:7777 in your browser
 ```
 
-### Visualize in your browser
+::: tip
+Always use `--no-browser` when running `mdv serve` inside Docker - the container has no browser to open.
+:::
+
+Images are available for `linux/amd64` and `linux/arm64`.
+
+## Quick Start
+
+### Analyse a project
+
+```bash
+# Emit JSON (schema v1.1) to stdout
+mdv analyse .
+
+# Run with a vulnerability and licence audit
+mdv analyse . --audit
+```
+
+### Visualise in your browser
 
 ```bash
 mdv serve .
-# → opens http://localhost:7777
+# → listening address is printed to stdout (port is auto-assigned)
+
+# Or use a fixed port
+mdv serve . --port 7777
 ```
 
 The interactive D3.js UI lets you zoom, pan, and filter nodes. The audit panel shows any CVEs or license issues directly on the graph.
@@ -75,7 +103,7 @@ mdv docs . --output DEPENDENCIES.md --audit
 
 | Requirement | Version |
 |---|---|
-| Go | 1.21+ (for `go install`) |
+| Go | 1.22+ (for `go install`) |
 | Node / npm | Any (for Node.js projects) |
 | Python | 3.8+ (for Python projects) |
 

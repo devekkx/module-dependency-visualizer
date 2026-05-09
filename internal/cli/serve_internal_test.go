@@ -74,7 +74,7 @@ func TestBuildDeps_ReturnsNonNil(t *testing.T) {
 
 func TestExecute_DoesNotPanic(t *testing.T) {
 	// Execute uses os.Args which in the test binary are test flags cobra cannot
-	// parse, so it will return a non-zero exit code — but it must not panic.
+	// parse, so it will return a non-zero exit code - but it must not panic.
 	defer func() {
 		if r := recover(); r != nil {
 			t.Errorf("Execute panicked: %v", r)

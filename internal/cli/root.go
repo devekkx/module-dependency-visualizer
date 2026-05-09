@@ -93,7 +93,7 @@ into a unified, interactive dependency graph.`,
 	cmd.PersistentFlags().Bool("no-color", false, "Disable color in log output")
 
 	cmd.AddCommand(
-		newAnalyzeCmd(deps),
+		newAnalyseCmd(deps),
 		newExportCmd(deps),
 		newVersionCmd(deps),
 		newServeCmd(deps),

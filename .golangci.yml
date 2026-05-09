@@ -19,7 +19,7 @@ linters:
 
 linters-settings:
   goimports:
-    local-prefixes: module-dependency-visualizer
+    local-prefixes: github.com/devekkx/module-dependency-visualizer
 
 issues:
   max-issues-per-linter: 0

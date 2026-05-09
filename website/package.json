@@ -1,7 +1,7 @@
 {
   "name": "mdv-docs",
   "version": "1.0.0",
-  "description": "Documentation site for mdv – Module Dependency Visualizer",
+  "description": "Documentation site for mdv - Module Dependency Visualizer",
   "type": "module",
   "scripts": {
     "dev": "vitepress dev docs",

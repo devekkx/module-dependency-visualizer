@@ -1,0 +1,8 @@
+.git
+.github
+.idea
+dist/
+website/
+coverage.out
+*.md
+!README.md

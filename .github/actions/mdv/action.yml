@@ -1,15 +1,11 @@
-name: mdv — Module Dependency Visualizer
-description: Analyze dependencies, detect vulnerabilities, and report changes between refs.
+name: mdv - Module Dependency Visualizer
+description: Analyse dependencies, detect vulnerabilities, and report changes between refs.
 
 inputs:
   path:
     description: Path to the project root (relative to the repository root).
     required: false
     default: "."
-  format:
-    description: Output format for the analyze command (table, json, markdown).
-    required: false
-    default: table
   audit:
     description: Run vulnerability and license audit.
     required: false
@@ -43,24 +39,35 @@ runs:
           VERSION=$(curl -fsSL https://api.github.com/repos/devekkx/module-dependency-visualizer/releases/latest \
             | grep '"tag_name"' | cut -d'"' -f4)
         fi
-        OS=$(uname -s | tr '[:upper:]' '[:lower:]')
-        ARCH=$(uname -m)
-        case "$ARCH" in
-          x86_64) ARCH=amd64 ;;
-          aarch64|arm64) ARCH=arm64 ;;
-        esac
-        URL="https://github.com/devekkx/module-dependency-visualizer/releases/download/${VERSION}/mdv_${OS}_${ARCH}.tar.gz"
-        curl -fsSL "$URL" | tar -xz -C /usr/local/bin mdv
+
+        if [ -n "$VERSION" ]; then
+          OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+          ARCH=$(uname -m)
+          case "$ARCH" in
+            x86_64) ARCH=amd64 ;;
+            aarch64|arm64) ARCH=arm64 ;;
+          esac
+          URL="https://github.com/devekkx/module-dependency-visualizer/releases/download/${VERSION}/mdv_${VERSION}_${OS}_${ARCH}.tar.gz"
+          if curl -fsSL "$URL" | tar -xz -C /usr/local/bin mdv 2>/dev/null; then
+            echo "Installed mdv ${VERSION} from release"
+          else
+            echo "Release binary not found for ${VERSION}, falling back to go install"
+            go install github.com/devekkx/module-dependency-visualizer/cmd/mdv@"${VERSION}"
+          fi
+        else
+          echo "No published release found, falling back to go install @latest"
+          go install github.com/devekkx/module-dependency-visualizer/cmd/mdv@latest
+        fi
         mdv version
 
-    - name: Analyze dependencies
+    - name: Analyse dependencies
       shell: bash
       run: |
         ARGS="${{ inputs.path }}"
         if [ "${{ inputs.audit }}" = "true" ]; then
           ARGS="$ARGS --audit"
         fi
-        mdv analyze $ARGS --format ${{ inputs.format }}
+        mdv analyse $ARGS
 
     - name: Diff dependencies
       if: inputs.diff != ''

@@ -1,4 +1,15 @@
+import { execSync } from 'child_process'
 import { defineConfig } from 'vitepress'
+
+function latestTag(): string {
+  try {
+    return execSync('git describe --tags --abbrev=0', { encoding: 'utf8' }).trim()
+  } catch {
+    return ''
+  }
+}
+
+const version = latestTag()
 
 export default defineConfig({
   title: 'mdv',
@@ -11,15 +22,22 @@ export default defineConfig({
 
     nav: [
       { text: 'Guide', link: '/getting-started' },
+      { text: 'Languages', link: '/languages' },
       { text: 'Commands', link: '/commands' },
       { text: 'Schema', link: '/schema' },
-      {
-        text: 'v0.5.0',
-        items: [
-          { text: 'Changelog', link: 'https://github.com/devekkx/module-dependency-visualizer/releases' },
-          { text: 'Contributing', link: '/contributing' },
-        ],
-      },
+      ...(version
+        ? [{
+            text: version,
+            items: [
+              { text: 'Changelog', link: 'https://github.com/devekkx/module-dependency-visualizer/releases' },
+              { text: 'Contributing', link: '/contributing' },
+            ],
+          }]
+        : [
+            { text: 'Changelog', link: 'https://github.com/devekkx/module-dependency-visualizer/releases' },
+            { text: 'Contributing', link: '/contributing' },
+          ]
+      ),
     ],
 
     sidebar: [
@@ -28,6 +46,7 @@ export default defineConfig({
         items: [
           { text: 'What is mdv?', link: '/' },
           { text: 'Getting Started', link: '/getting-started' },
+          { text: 'Supported Languages', link: '/languages' },
         ],
       },
       {

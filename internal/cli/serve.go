@@ -28,7 +28,7 @@ func openBrowser(url string) {
 	default:
 		cmd, args = "xdg-open", []string{url}
 	}
-	// Intentionally ignore errors — browser open is best-effort.
+	// Intentionally ignore errors - browser open is best-effort.
 	_ = exec.Command(cmd, args...).Start()
 }
 

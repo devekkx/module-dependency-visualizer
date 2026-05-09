@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MDV — Module Dependency Visualizer</title>
+    <title>MDV - Module Dependency Visualizer</title>
     <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
 
-<!-- ── Loading ──────────────────────────────────────────────── -->
+<!-- Loading  -->
 <div id="loading">
     <div class="spinner"></div>
     <span>Analysing dependencies…</span>
 </div>
 
-<!-- ── Error ────────────────────────────────────────────────── -->
+<!-- Error -->
 <div id="error-banner" class="hidden">
     <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10"/>
@@ -24,7 +24,7 @@
     <span class="error-msg">Unable to load graph</span>
 </div>
 
-<!-- ── App ──────────────────────────────────────────────────── -->
+<!-- App -->
 <div id="app" class="hidden">
 
     <!-- Top bar -->
@@ -146,7 +146,7 @@
 
 </div><!-- #app -->
 
-<!-- ── Audit Panel ───────────────────────────────────────────── -->
+<!-- Audit Panel -->
 <div id="audit-overlay" class="hidden">
     <div id="audit-panel">
         <div id="audit-panel-header">
@@ -184,12 +184,9 @@
     </div>
 </div>
 
-<!-- ── Tooltip ──────────────────────────────────────────────── -->
+<!-- Tooltip  -->
 <div id="tooltip"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"
-        integrity="sha256-1rA8B5LDMZ+2+n/LOqMdAiuZQyIZiKmC11AhFLvKAA="
-        crossorigin="anonymous"></script>
-<script src="/static/app.js"></script>
+<script type="module" src="/static/app.js"></script>
 </body>
 </html>

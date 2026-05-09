@@ -118,7 +118,7 @@ func TestEncode_Deterministic(t *testing.T) {
 	}
 
 	if string(first) != string(second) {
-		t.Error("Encode() is not deterministic — two calls produced different output")
+		t.Error("Encode() is not deterministic - two calls produced different output")
 	}
 }
 

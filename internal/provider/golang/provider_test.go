@@ -141,7 +141,7 @@ func TestGoProvider_Parse_EmptyModGraph(t *testing.T) {
 	}
 	p := goprovider.NewWithRunner(runner)
 
-	// Empty mod graph means no edges — the graph should have zero nodes since
+	// Empty mod graph means no edges - the graph should have zero nodes since
 	// all nodes come from edges in go mod graph output.
 	g, _, err := p.Parse(context.Background(), "/fake/path", provider.ParseOptions{})
 	if err != nil {
