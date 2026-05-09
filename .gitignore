@@ -36,5 +36,10 @@ go.work.sum
 .DS_Store
 Thumbs.db
 
+# Vercel
+.vercel/
+
 # Local files
 roadmap.pdf
+.vercel
+.env*.local

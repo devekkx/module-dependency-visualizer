@@ -43,8 +43,9 @@ jobs:
   deploy:
     name: Deploy to Vercel
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/production'
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
 
