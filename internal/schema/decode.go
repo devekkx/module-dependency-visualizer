@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 // Decode parses a JSON document and reconstructs a Graph and its Project metadata.

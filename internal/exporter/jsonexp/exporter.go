@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"module-dependency-visualizer/internal/graph"
-	"module-dependency-visualizer/internal/schema"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/schema"
 )
 
 // Exporter writes a graph as JSON Schema v1.0.0.

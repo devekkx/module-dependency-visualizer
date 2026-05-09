@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	pyprovider "module-dependency-visualizer/internal/provider/python"
+	pyprovider "github.com/devekkx/module-dependency-visualizer/internal/provider/python"
 )
 
 // fixtureFile reads a file from testdata/fixtures/<parts>.

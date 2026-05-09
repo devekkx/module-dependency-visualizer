@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 func makeNode(path, version string, kind graph.NodeKind) graph.Node {

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 // EncodeOptions controls how a graph is serialized.

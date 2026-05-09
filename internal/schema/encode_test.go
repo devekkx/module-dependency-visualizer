@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"module-dependency-visualizer/internal/graph"
-	"module-dependency-visualizer/internal/schema"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/schema"
 )
 
 var update = flag.Bool("update", false, "Update golden files")

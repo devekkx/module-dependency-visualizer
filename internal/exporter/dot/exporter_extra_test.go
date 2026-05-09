@@ -7,8 +7,8 @@ import (
 	"io"
 	"testing"
 
-	"module-dependency-visualizer/internal/exporter/dot"
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter/dot"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 // errorWriter always returns an error on Write.

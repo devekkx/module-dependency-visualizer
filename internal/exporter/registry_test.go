@@ -4,9 +4,9 @@ import (
 	"errors"
 	"testing"
 
-	"module-dependency-visualizer/internal/exporter"
-	"module-dependency-visualizer/internal/exporter/dot"
-	"module-dependency-visualizer/internal/exporter/mermaid"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter/dot"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter/mermaid"
 )
 
 func TestRegistry_Register_RejectsDuplicate(t *testing.T) {

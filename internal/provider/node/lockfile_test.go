@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	nodeprovider "module-dependency-visualizer/internal/provider/node"
+	nodeprovider "github.com/devekkx/module-dependency-visualizer/internal/provider/node"
 )
 
 func fixtureFile(t *testing.T, parts ...string) []byte {

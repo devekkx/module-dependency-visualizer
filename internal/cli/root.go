@@ -9,10 +9,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"module-dependency-visualizer/internal/config"
-	"module-dependency-visualizer/internal/exporter"
-	"module-dependency-visualizer/internal/logging"
-	"module-dependency-visualizer/internal/provider"
+	"github.com/devekkx/module-dependency-visualizer/internal/config"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter"
+	"github.com/devekkx/module-dependency-visualizer/internal/logging"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
 )
 
 // Deps holds the application-level dependencies injected at startup.
@@ -98,6 +98,8 @@ into a unified, interactive dependency graph.`,
 		newVersionCmd(deps),
 		newServeCmd(deps),
 		newAuditCmd(deps),
+		newDiffCmd(deps),
+		newDocsCmd(deps),
 	)
 
 	return cmd

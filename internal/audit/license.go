@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"strings"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 const depsDevBase = "https://api.deps.dev/v3alpha"

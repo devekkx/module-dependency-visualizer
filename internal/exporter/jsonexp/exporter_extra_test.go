@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"module-dependency-visualizer/internal/exporter/jsonexp"
-	"module-dependency-visualizer/internal/graph"
-	"module-dependency-visualizer/internal/schema"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter/jsonexp"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/schema"
 )
 
 type errorWriter struct{}

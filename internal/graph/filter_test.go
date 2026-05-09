@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"testing"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 func buildFilterFixture(t *testing.T) *graph.Graph {

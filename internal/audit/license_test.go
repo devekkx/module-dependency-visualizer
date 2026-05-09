@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"module-dependency-visualizer/internal/audit"
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/audit"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 func TestSystemFor(t *testing.T) {

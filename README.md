@@ -33,6 +33,8 @@ mdv export . --format dot --no-indirect --depth 2
 | `mdv export <path> --format=dot\|mermaid\|json` | Export to chosen format |
 | `mdv audit <path>` | Run standalone security / license / conflict audit |
 | `mdv serve <path>` | Launch interactive D3.js web UI with audit panel |
+| `mdv diff <path>` | Show dependency changes between two git refs |
+| `mdv docs <path>` | Generate `DEPENDENCIES.md` with optional audit data |
 | `mdv version` | Print build metadata |
 
 ### Common Flags
@@ -52,11 +54,11 @@ analyze / export:
 
 ## Output Formats
 
-### JSON (Schema v1.0.0)
+### JSON (Schema v1.1.0)
 
 ```json
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "project":        { "name": "...", "language": "go", ... },
   "nodes":          [{ "id": "github.com/spf13/cobra@v1.8.0", "kind": "module", ... }],
   "edges":          [{ "from": "...", "to": "...", "kind": "depends_on" }],
@@ -106,7 +108,7 @@ make lint           # golangci-lint
 | 2 – Agnostic Layer | ✅ Done | NPM/Yarn/PNPM/Bun, Python/Pip/Poetry |
 | 3 – Interactive UI | ✅ Done | Embedded D3.js web server (`mdv serve`) |
 | 4 – Intelligence | ✅ Done | OSV vulnerability scan, license audit, conflict detection |
-| 5 – Workflow | Planned | Git diff, GitHub Actions, automated docs |
+| 5 – Workflow | ✅ Done | `mdv diff`, `mdv docs`, GitHub Actions composite action |
 
 ## Contributing
 

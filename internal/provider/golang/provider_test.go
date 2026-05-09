@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"module-dependency-visualizer/internal/provider"
-	goprovider "module-dependency-visualizer/internal/provider/golang"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
+	goprovider "github.com/devekkx/module-dependency-visualizer/internal/provider/golang"
 )
 
 // fakeRunner returns preconfigured output for specific commands.

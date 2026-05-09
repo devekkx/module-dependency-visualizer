@@ -7,16 +7,16 @@ import (
 	"strings"
 	"testing"
 
-	"module-dependency-visualizer/internal/cli"
-	"module-dependency-visualizer/internal/config"
-	"module-dependency-visualizer/internal/exporter"
-	"module-dependency-visualizer/internal/exporter/dot"
-	"module-dependency-visualizer/internal/exporter/jsonexp"
-	"module-dependency-visualizer/internal/exporter/mermaid"
-	"module-dependency-visualizer/internal/graph"
-	"module-dependency-visualizer/internal/logging"
-	"module-dependency-visualizer/internal/provider"
-	"module-dependency-visualizer/internal/schema"
+	"github.com/devekkx/module-dependency-visualizer/internal/cli"
+	"github.com/devekkx/module-dependency-visualizer/internal/config"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter/dot"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter/jsonexp"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter/mermaid"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/logging"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
+	"github.com/devekkx/module-dependency-visualizer/internal/schema"
 )
 
 // stubProvider always detects and returns a fixed graph.

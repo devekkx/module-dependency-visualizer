@@ -12,7 +12,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"module-dependency-visualizer/internal/server"
+	"github.com/devekkx/module-dependency-visualizer/internal/server"
 )
 
 const shutdownTimeout = 5 * time.Second

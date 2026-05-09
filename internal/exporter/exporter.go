@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 // Exporter serializes a graph to a specific text format.

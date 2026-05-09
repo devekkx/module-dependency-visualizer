@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"module-dependency-visualizer/internal/provider"
-	pyprovider "module-dependency-visualizer/internal/provider/python"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
+	pyprovider "github.com/devekkx/module-dependency-visualizer/internal/provider/python"
 )
 
 // TestExecRunner_Run verifies ExecRunner shells out correctly.

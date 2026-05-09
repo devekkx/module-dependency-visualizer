@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	"module-dependency-visualizer/internal/graph"
-	"module-dependency-visualizer/internal/provider"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
 )
 
 // stubProvider is a test double that controls Detect behavior.

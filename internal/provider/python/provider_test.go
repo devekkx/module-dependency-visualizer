@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"module-dependency-visualizer/internal/provider"
-	pyprovider "module-dependency-visualizer/internal/provider/python"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
+	pyprovider "github.com/devekkx/module-dependency-visualizer/internal/provider/python"
 )
 
 // fakeLookPath always succeeds, returning "/usr/bin/<name>".

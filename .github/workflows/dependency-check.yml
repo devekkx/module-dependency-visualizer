@@ -1,0 +1,59 @@
+name: Dependency Check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "go.mod"
+      - "go.sum"
+      - "package.json"
+      - "package-lock.json"
+      - "requirements*.txt"
+      - "pyproject.toml"
+  pull_request:
+    paths:
+      - "go.mod"
+      - "go.sum"
+      - "package.json"
+      - "package-lock.json"
+      - "requirements*.txt"
+      - "pyproject.toml"
+
+jobs:
+  dependency-check:
+    name: Analyze & Audit Dependencies
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Run mdv
+        uses: ./.github/actions/mdv
+        with:
+          path: .
+          audit: "true"
+          diff: HEAD~1
+          generate-docs: "true"
+          format: markdown
+
+      - name: Upload DEPENDENCIES.md
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependencies-doc
+          path: DEPENDENCIES.md
+          if-no-files-found: ignore
+
+      - name: Commit updated DEPENDENCIES.md
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add DEPENDENCIES.md
+          git diff --cached --quiet || git commit -m "chore: update DEPENDENCIES.md [skip ci]"
+          git push

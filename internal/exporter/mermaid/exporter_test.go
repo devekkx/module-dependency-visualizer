@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"module-dependency-visualizer/internal/exporter/mermaid"
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter/mermaid"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 var update = flag.Bool("update", false, "Update golden files")

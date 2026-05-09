@@ -3,18 +3,18 @@ package main
 import (
 	"os"
 
-	"module-dependency-visualizer/internal/cli"
-	"module-dependency-visualizer/internal/config"
-	"module-dependency-visualizer/internal/exporter"
-	"module-dependency-visualizer/internal/exporter/dot"
-	"module-dependency-visualizer/internal/exporter/jsonexp"
-	"module-dependency-visualizer/internal/exporter/mermaid"
-	"module-dependency-visualizer/internal/logging"
-	"module-dependency-visualizer/internal/provider"
-	goprovider "module-dependency-visualizer/internal/provider/golang"
-	nodeprovider "module-dependency-visualizer/internal/provider/node"
-	pyprovider "module-dependency-visualizer/internal/provider/python"
-	"module-dependency-visualizer/internal/schema"
+	"github.com/devekkx/module-dependency-visualizer/internal/cli"
+	"github.com/devekkx/module-dependency-visualizer/internal/config"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter/dot"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter/jsonexp"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter/mermaid"
+	"github.com/devekkx/module-dependency-visualizer/internal/logging"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
+	goprovider "github.com/devekkx/module-dependency-visualizer/internal/provider/golang"
+	nodeprovider "github.com/devekkx/module-dependency-visualizer/internal/provider/node"
+	pyprovider "github.com/devekkx/module-dependency-visualizer/internal/provider/python"
+	"github.com/devekkx/module-dependency-visualizer/internal/schema"
 )
 
 // These variables are set by goreleaser / ldflags at build time.

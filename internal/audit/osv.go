@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 const osvBatchEndpoint = "https://api.osv.dev/v1/querybatch"

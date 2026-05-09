@@ -10,9 +10,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"module-dependency-visualizer/internal/audit"
-	"module-dependency-visualizer/internal/config"
-	"module-dependency-visualizer/internal/schema"
+	"github.com/devekkx/module-dependency-visualizer/internal/audit"
+	"github.com/devekkx/module-dependency-visualizer/internal/config"
+	"github.com/devekkx/module-dependency-visualizer/internal/schema"
 )
 
 func newAuditCmd(deps *Deps) *cobra.Command {
