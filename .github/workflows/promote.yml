@@ -1,8 +1,8 @@
-name: Promote to Main
+name: Promote to Production
 
 on:
   pull_request:
-    branches: [main]
+    branches: [production]
 
 concurrency:
   group: promote-${{ github.ref }}
