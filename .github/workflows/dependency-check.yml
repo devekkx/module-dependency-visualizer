@@ -25,14 +25,17 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      - name: mdv analyze & audit
-        uses: ./.github/actions/mdv
-        with:
-          path: .
-          audit: "true"
-          diff: ${{ github.event.pull_request.base.sha }}
-          generate-docs: "true"
-          format: markdown
+      - name: Build mdv from source
+        run: make build
+
+      - name: Analyze & audit
+        run: ./dist/mdv analyze . --audit --format markdown
+
+      - name: Diff dependencies
+        run: ./dist/mdv diff . --from ${{ github.event.pull_request.base.sha }} || true
+
+      - name: Generate DEPENDENCIES.md
+        run: ./dist/mdv docs . --output DEPENDENCIES.md --audit
 
       - name: govulncheck
         run: |
