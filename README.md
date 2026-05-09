@@ -33,7 +33,7 @@
 
 | Feature | Description |
 |---|---|
-| **Language-agnostic** | Go (`go.mod`), Node (`package.json`, lockfiles), Python (`requirements.txt`, `pyproject.toml`, `poetry.lock`) |
+| **Language support** | **Go** (`go.mod`), **Node** (npm, Yarn v1/Berry, pnpm, Bun), **Python** (pip, Poetry, Pipenv, uv, pyproject.toml) |
 | **Security audit** | Queries the [OSV](https://osv.dev) database for known CVEs per dependency version |
 | **License audit** | Detects non-permissive and conflicting licenses across the dependency tree |
 | **Conflict detection** | Flags the same package required at multiple incompatible versions |

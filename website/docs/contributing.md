@@ -23,12 +23,12 @@ make cover        # generate HTML coverage report
 make lint         # run golangci-lint
 ```
 
-All submitted code must pass `gofmt` and `go vet` — CI enforces both.
+All submitted code must pass `gofmt` and `go vet` - CI enforces both.
 
 ## How to Contribute
 
 1. **Fork** the repository and create your branch from `main`.
-2. **Make focused changes** — one concern per PR.
+2. **Make focused changes** - one concern per PR.
 3. **Write or update tests** for any logic you add or change.
 4. **Run `make test`** to confirm nothing is broken.
 5. **Open a pull request** against `main`.
