@@ -73,15 +73,15 @@ async function init() {
 }
 
 function applyMeta(data) {
-    const meta = data.metadata || {};
+    const proj = data.project || {};
     const total = state.allNodes.length;
     const edges = state.allLinks.length;
 
     document.getElementById('stat-nodes').textContent = `${total} node${total !== 1 ? 's' : ''}`;
     document.getElementById('stat-edges').textContent = `${edges} edge${edges !== 1 ? 's' : ''}`;
 
-    const name = meta.project_name || '';
-    const lang = meta.language || '';
+    const name = proj.name || '';
+    const lang = proj.language || '';
 
     if (name) {
         document.getElementById('project-name').textContent = name;
@@ -220,6 +220,7 @@ function render() {
     const { nodes, links } = getVisible();
     const visCount = nodes.length;
 
+    document.getElementById('empty-state').classList.toggle('hidden', visCount > 0);
     document.getElementById('stat-visible').textContent =
         visCount !== state.allNodes.length ? `${visCount} visible` : '';
 
