@@ -84,7 +84,7 @@ func Diff(from, to *graph.Graph) *Result {
 
 // indexByName maps module name → Node for all non-main nodes.
 // When the same name appears at multiple versions (a conflict), the last one
-// wins — the diff is still meaningful for detecting presence/absence.
+// wins - the diff is still meaningful for detecting presence/absence.
 func indexByName(g *graph.Graph) map[string]graph.Node {
 	m := make(map[string]graph.Node)
 	for _, n := range g.Nodes() {

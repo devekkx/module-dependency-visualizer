@@ -56,7 +56,7 @@ func TestNode_Copy_IsolatesMetadata(t *testing.T) {
 	copied.Metadata["key"] = "mutated"
 
 	if original.Metadata["key"] != "value" {
-		t.Error("Copy() did not isolate metadata — original was mutated")
+		t.Error("Copy() did not isolate metadata - original was mutated")
 	}
 }
 

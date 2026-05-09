@@ -1,8 +1,8 @@
-# mdv — Module Dependency Visualizer
+# mdv - Module Dependency Visualizer
 
 **Understand your project's architecture before it becomes technical debt.**
 
-`mdv` is a language-agnostic CLI that parses `go.mod`, `package.json`, `requirements.txt`, and more into a unified, interactive dependency graph. It ships with a security auditor, a D3.js web UI, a diff engine, and a GitHub Actions composite action — covering the full dependency lifecycle in a single binary.
+`mdv` is a language-agnostic CLI that parses `go.mod`, `package.json`, `requirements.txt`, and more into a unified, interactive dependency graph. It ships with a security auditor, a D3.js web UI, a diff engine, and a GitHub Actions composite action - covering the full dependency lifecycle in a single binary.
 
 [![CI](https://github.com/devekkx/module-dependency-visualizer/actions/workflows/ci.yml/badge.svg)](https://github.com/devekkx/module-dependency-visualizer/actions/workflows/ci.yml)
 [![Dependency Check](https://github.com/devekkx/module-dependency-visualizer/actions/workflows/dependency-check.yml/badge.svg)](https://github.com/devekkx/module-dependency-visualizer/actions/workflows/dependency-check.yml)
@@ -41,7 +41,7 @@
 | **Multiple export formats** | JSON (schema v1.1), Graphviz DOT, Mermaid |
 | **Dependency diff** | Compares snapshots across any two git refs |
 | **Doc generation** | Writes a `DEPENDENCIES.md` report, suitable for committing alongside releases |
-| **GitHub Actions** | Drop-in composite action — analyze, audit, diff, and generate docs on every PR |
+| **GitHub Actions** | Drop-in composite action - analyze, audit, diff, and generate docs on every PR |
 
 ---
 
@@ -49,7 +49,7 @@
 
 ### go install (recommended)
 
-Requires Go 1.21+.
+Requires Go 1.22+.
 
 ```bash
 go install github.com/devekkx/module-dependency-visualizer/cmd/mdv@latest
@@ -79,8 +79,11 @@ Verify checksums with the `checksums.txt` file included in each release.
 # Summarise dependencies in your terminal
 mdv analyze .
 
-# Launch the interactive web UI at http://localhost:7777
+# Launch the interactive web UI (port is auto-assigned, shown in output)
 mdv serve .
+
+# Use a fixed port
+mdv serve . --port 7777
 
 # Export a Graphviz SVG
 mdv export . --format dot | dot -Tsvg -o deps.svg
@@ -115,8 +118,8 @@ mdv analyze <path> [flags]
 | `-o, --output` | `-` (stdout) | Write output to file |
 | `--format` | `table` | `table`, `json`, or `markdown` |
 | `-d, --depth` | `-1` (unlimited) | Maximum dependency depth |
-| `--include` | — | Keep modules matching regex (repeatable) |
-| `--exclude` | — | Remove modules matching regex (repeatable) |
+| `--include` | - | Keep modules matching regex (repeatable) |
+| `--exclude` | - | Remove modules matching regex (repeatable) |
 | `--no-indirect` | `false` | Omit transitive dependencies |
 | `--audit` | `false` | Embed vulnerability/license/conflict data |
 
@@ -145,7 +148,7 @@ Checks each dependency against the OSV database, flags non-permissive licenses, 
 Launch an interactive D3.js dependency graph in your browser.
 
 ```
-mdv serve <path> [--port 7777] [--audit]
+mdv serve <path> [--port <n>] [--audit]
 ```
 
 ### `mdv diff`
@@ -181,7 +184,7 @@ Print version, commit hash, and build date.
 
 ## Output Formats
 
-### JSON — Schema v1.1
+### JSON - Schema v1.1
 
 The canonical, machine-readable graph. Powers all other exporters.
 
@@ -198,7 +201,7 @@ The canonical, machine-readable graph. Powers all other exporters.
 
 See [`docs/schema-v1.md`](docs/schema-v1.md) for the complete field reference.
 
-### DOT — Graphviz
+### DOT - Graphviz
 
 ```bash
 mdv export . --format dot | dot -Tsvg -o deps.svg
@@ -322,9 +325,9 @@ module-dependency-visualizer/
 The project follows a three-tier promotion model:
 
 ```
-feature/*  ──PR──▶  testing     (integration branch — CI runs here)
-testing    ──PR──▶  develop     (stable dev — dep checks run here)
-develop    ──PR──▶  production  (release-ready — full gate runs here)
+feature/*  ──PR──▶  testing     (integration branch - CI runs here)
+testing    ──PR──▶  develop     (stable dev - dep checks run here)
+develop    ──PR──▶  production  (release-ready - full gate runs here)
 production ──tag──▶  v*.*.*    (triggers GitHub Release)
 ```
 
@@ -338,10 +341,10 @@ production ──tag──▶  v*.*.*    (triggers GitHub Release)
 **Day-to-day flow:**
 
 1. Branch off `testing`: `git checkout -b feature/my-thing testing`
-2. Open a PR to `testing` — CI runs unit tests, lint, and build.
-3. Once merged, open a PR from `testing` → `develop` — dependency audit and security scan run.
-4. When ready to ship, open a PR from `develop` → `production` — the full gate runs (tests, lint, security, cross-platform build, docs).
-5. Tag the merge commit on `production`: `git tag v1.2.3 && git push --tags` — the release pipeline publishes binaries to GitHub Releases.
+2. Open a PR to `testing` - CI runs unit tests, lint, and build.
+3. Once merged, open a PR from `testing` → `develop` - dependency audit and security scan run.
+4. When ready to ship, open a PR from `develop` → `production` - the full gate runs (tests, lint, security, cross-platform build, docs).
+5. Tag the merge commit on `production`: `git tag v1.2.3 && git push --tags` - the release pipeline publishes binaries to GitHub Releases.
 
 ---
 
@@ -349,7 +352,7 @@ production ──tag──▶  v*.*.*    (triggers GitHub Release)
 
 All pipelines live in [`.github/workflows/`](.github/workflows/).
 
-### `ci.yml` — CI (PR → `testing`)
+### `ci.yml` - CI (PR → `testing`)
 
 Runs on every pull request targeting `testing`. Stale runs are cancelled automatically on force-push.
 
@@ -357,20 +360,20 @@ Runs on every pull request targeting `testing`. Stale runs are cancelled automat
 |---|---|
 | **Test** (matrix: Go 1.22, 1.23, stable) | `go mod tidy` drift check, `go vet`, tests with race detector, 80% coverage gate |
 | **Lint** | golangci-lint with the project's `.golangci.yml` ruleset |
-| **Build** | `make build` — verifies the binary compiles; uploads artifact for 3 days |
+| **Build** | `make build` - verifies the binary compiles; uploads artifact for 3 days |
 
 The coverage report artifact (`coverage.out`) is uploaded from the `stable` matrix leg and kept for 7 days.
 
-### `dependency-check.yml` — Dependency Check (PR → `develop`)
+### `dependency-check.yml` - Dependency Check (PR → `develop`)
 
 Runs on every pull request targeting `develop`. Posts a single auto-updating comment on the PR.
 
 | Job | What it does |
 |---|---|
 | **Dependency Audit** | `mdv analyze --audit`, dependency diff against the base SHA, `govulncheck` (informational), generates `DEPENDENCIES.md`, posts/updates PR comment |
-| **Security Scan** | `gosec` in SARIF mode — results uploaded to GitHub Security tab |
+| **Security Scan** | `gosec` in SARIF mode - results uploaded to GitHub Security tab |
 
-### `promote.yml` — Promote to Production (PR → `production`)
+### `promote.yml` - Promote to Production (PR → `production`)
 
 The strictest gate. All jobs must pass before merging to `production`.
 
@@ -378,11 +381,11 @@ The strictest gate. All jobs must pass before merging to `production`.
 |---|---|
 | **Full Test Suite** | Same as CI but runs once, not matrix |
 | **Lint** | golangci-lint |
-| **Security Gate** | `govulncheck` (**blocking** — non-zero exit fails the PR), `gosec` SARIF |
-| **Cross-platform Build** (5-way matrix) | `linux/amd64`, `linux/arm64`, `darwin/amd64`, `darwin/arm64`, `windows/amd64` — all with `CGO_ENABLED=0` |
-| **Docs Build** | `npm ci && npm run build` in `website/` — verifies the docs site compiles |
+| **Security Gate** | `govulncheck` (**blocking** - non-zero exit fails the PR), `gosec` SARIF |
+| **Cross-platform Build** (5-way matrix) | `linux/amd64`, `linux/arm64`, `darwin/amd64`, `darwin/arm64`, `windows/amd64` - all with `CGO_ENABLED=0` |
+| **Docs Build** | `npm ci && npm run build` in `website/` - verifies the docs site compiles |
 
-### `release.yml` — Release (push tag `v*.*.*`)
+### `release.yml` - Release (push tag `v*.*.*`)
 
 Triggered by pushing a semver tag to `production`. Builds static binaries for all platforms, packages them with `README.md` and `LICENSE`, generates `checksums.txt`, and publishes a GitHub Release with auto-generated release notes.
 
@@ -404,7 +407,7 @@ mdv_v1.2.3_windows_amd64.zip
 checksums.txt
 ```
 
-### `docs.yml` — Docs (PR touching `website/**`)
+### `docs.yml` - Docs (PR touching `website/**`)
 
 Validates the VitePress build on any PR that modifies the `website/` directory. Uploads the built site as an artifact for preview.
 
@@ -414,11 +417,11 @@ Validates the VitePress build on any PR that modifies the `website/` directory. 
 
 | Phase | Status | Highlights |
 |---|---|---|
-| 1 — Foundation | ✅ Done | Go provider, JSON schema v1, DOT + Mermaid export |
-| 2 — Agnostic Layer | ✅ Done | NPM/Yarn/PNPM/Bun, Python/pip/Poetry providers |
-| 3 — Interactive UI | ✅ Done | Embedded D3.js web server (`mdv serve`) |
-| 4 — Intelligence | ✅ Done | OSV vulnerability scan, license audit, conflict detection |
-| 5 — Workflow | ✅ Done | `mdv diff`, `mdv docs`, GitHub Actions composite action |
+| 1 - Foundation | ✅ Done | Go provider, JSON schema v1, DOT + Mermaid export |
+| 2 - Agnostic Layer | ✅ Done | NPM/Yarn/PNPM/Bun, Python/pip/Poetry providers |
+| 3 - Interactive UI | ✅ Done | Embedded D3.js web server (`mdv serve`) |
+| 4 - Intelligence | ✅ Done | OSV vulnerability scan, license audit, conflict detection |
+| 5 - Workflow | ✅ Done | `mdv diff`, `mdv docs`, GitHub Actions composite action |
 
 ---
 
@@ -430,7 +433,7 @@ Quick summary:
 
 1. Branch off `testing`
 2. Make focused changes and write tests (80% coverage required)
-3. Open a PR to `testing` — CI must pass
+3. Open a PR to `testing` - CI must pass
 4. Follow [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`
 
 ---

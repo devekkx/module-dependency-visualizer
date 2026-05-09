@@ -168,7 +168,7 @@ func TestPythonProvider_Parse_NoFiles(t *testing.T) {
 
 func TestPythonProvider_Parse_Poetry_MissingLock(t *testing.T) {
 	dir := t.TempDir()
-	// poetry.lock not present but pyproject.toml is — falls to pyproject path.
+	// poetry.lock not present but pyproject.toml is - falls to pyproject path.
 	copyFixtures(t, dir, "poetry-simple", "pyproject.toml")
 
 	p := pyprovider.NewWithRunnerAndLookPath(pyprovider.ExecRunner{}, fakeLookPath)

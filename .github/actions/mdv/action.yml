@@ -1,4 +1,4 @@
-name: mdv — Module Dependency Visualizer
+name: mdv - Module Dependency Visualizer
 description: Analyze dependencies, detect vulnerabilities, and report changes between refs.
 
 inputs:

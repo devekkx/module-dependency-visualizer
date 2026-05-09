@@ -87,7 +87,7 @@ func findGoBinary() (string, error) {
 	import_ := "go"
 	path, err := lookPath(import_)
 	if err != nil {
-		return "", fmt.Errorf("go: binary not found in PATH — install Go from https://go.dev/dl: %w", err)
+		return "", fmt.Errorf("go: binary not found in PATH - install Go from https://go.dev/dl: %w", err)
 	}
 	return path, nil
 }

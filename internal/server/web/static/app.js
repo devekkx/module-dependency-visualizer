@@ -83,7 +83,7 @@ function applyMeta(data) {
 
     if (name) {
         document.getElementById('project-name').textContent = name;
-        document.title = `MDV — ${name}`;
+        document.title = `MDV - ${name}`;
     }
     if (lang) {
         const badge = document.getElementById('lang-badge');
@@ -381,8 +381,8 @@ function showDetail(d) {
         .filter(Boolean);
 
     document.getElementById('detail-name').textContent    = d.name;
-    document.getElementById('detail-version').textContent = d.version  || '—';
-    document.getElementById('detail-kind').textContent    = d.kind     || '—';
+    document.getElementById('detail-version').textContent = d.version  || '-';
+    document.getElementById('detail-kind').textContent    = d.kind     || '-';
     document.getElementById('detail-indirect').textContent = d.indirect ? 'Yes' : 'No';
 
     // License
@@ -469,7 +469,7 @@ async function openAuditPanel() {
     results.classList.add('hidden');
 
     if (state.audit) {
-        // Already loaded — just show results.
+        // Already loaded - just show results.
         renderAuditResults(state.audit);
         loading.classList.add('hidden');
         results.classList.remove('hidden');
@@ -539,7 +539,7 @@ function renderAuditResults(data) {
                     <a class="vuln-id" href="${v.link || '#'}" target="_blank" rel="noopener">${v.id}</a>
                     <span class="sev-badge sev-${v.severity || 'UNKNOWN'}">${v.severity || 'UNKNOWN'}</span>
                 </div>
-                <div class="vuln-summary">${v.summary || '—'}</div>
+                <div class="vuln-summary">${v.summary || '-'}</div>
                 <div class="vuln-module">${v.node_id}</div>
                 ${v.fixed_in ? `<div class="vuln-fix">Fix: upgrade to ${v.fixed_in}</div>` : ''}
             </div>

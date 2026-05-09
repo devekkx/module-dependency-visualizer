@@ -12,7 +12,7 @@ import (
 // TestExecute_NoProviders verifies that Execute() runs without panicking.
 // With no providers registered the binary exits with a user error code.
 func TestExecute_RunsWithoutPanic(t *testing.T) {
-	// ExecuteWithDeps with empty registries — unknown command path.
+	// ExecuteWithDeps with empty registries - unknown command path.
 	deps := buildTestDeps(t)
 	code := cli.ExecuteWithDeps(deps, []string{"version"})
 	if code != 0 {

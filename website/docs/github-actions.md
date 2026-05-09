@@ -1,6 +1,6 @@
 # GitHub Actions
 
-`mdv` ships a composite Action that can analyze dependencies, run audits, diff across refs, and generate `DEPENDENCIES.md` — all within a single workflow step.
+`mdv` ships a composite Action that can analyze dependencies, run audits, diff across refs, and generate `DEPENDENCIES.md` - all within a single workflow step.
 
 ## Quick Setup
 
@@ -99,7 +99,7 @@ jobs:
 
 ## Permissions
 
-The Action only reads from the repository — no write permissions needed unless you also push `DEPENDENCIES.md` (see the commit example above).
+The Action only reads from the repository - no write permissions needed unless you also push `DEPENDENCIES.md` (see the commit example above).
 
 ## Pre-requisites
 

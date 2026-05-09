@@ -33,5 +33,5 @@ Key choices:
 
 ## Alternatives Considered
 
-- **Variadic functional options on `Parse`**: rejected — harder to read at call sites and adds boilerplate for every caller.
-- **Single `Analyze(ctx, path)` method**: rejected — separating detect from parse improves error messages (the user gets "unsupported project" instead of a parse error).
+- **Variadic functional options on `Parse`**: rejected - harder to read at call sites and adds boilerplate for every caller.
+- **Single `Analyze(ctx, path)` method**: rejected - separating detect from parse improves error messages (the user gets "unsupported project" instead of a parse error).

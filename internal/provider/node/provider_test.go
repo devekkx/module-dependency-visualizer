@@ -105,7 +105,7 @@ func TestNodeProvider_Parse_NPM_WithLockfile(t *testing.T) {
 
 func TestNodeProvider_Parse_NPM_FallbackToNpmLS(t *testing.T) {
 	dir := t.TempDir()
-	// Only package.json — no lock file → must call npm ls.
+	// Only package.json - no lock file → must call npm ls.
 	copyFixtures(t, dir, "npm-simple", "package.json")
 
 	npmLSOut := []byte(`{

@@ -2,7 +2,7 @@
 
 ## Installation
 
-### From Source (Go 1.21+)
+### From Source (Go 1.22+)
 
 ```bash
 go install github.com/devekkx/module-dependency-visualizer/cmd/mdv@latest
@@ -37,7 +37,10 @@ mdv analyze . --audit
 
 ```bash
 mdv serve .
-# → opens http://localhost:7777
+# → listening address is printed to stdout (port is auto-assigned)
+
+# Or use a fixed port
+mdv serve . --port 7777
 ```
 
 The interactive D3.js UI lets you zoom, pan, and filter nodes. The audit panel shows any CVEs or license issues directly on the graph.
@@ -75,7 +78,7 @@ mdv docs . --output DEPENDENCIES.md --audit
 
 | Requirement | Version |
 |---|---|
-| Go | 1.21+ (for `go install`) |
+| Go | 1.22+ (for `go install`) |
 | Node / npm | Any (for Node.js projects) |
 | Python | 3.8+ (for Python projects) |
 

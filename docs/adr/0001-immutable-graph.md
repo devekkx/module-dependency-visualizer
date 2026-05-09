@@ -14,6 +14,6 @@ The dependency graph is computed once per `mdv` invocation and then read by mult
 ## Consequences
 
 - **+** No locking needed when passing `*Graph` to concurrent goroutines (Phase 3 HTTP server).
-- **+** Phase 4 enrichment creates a new `Graph` via `Builder` rather than modifying the original — the audit path cannot corrupt the analysis result.
+- **+** Phase 4 enrichment creates a new `Graph` via `Builder` rather than modifying the original - the audit path cannot corrupt the analysis result.
 - **+** Diffing two graphs (Phase 5) is straightforward: no snapshot required.
 - **-** Each accessor call allocates a new slice. For very large graphs (>10k nodes) this may be measurable. Mitigation: benchmark-driven optimization if profiling reveals a hot path; the interface is stable so the implementation can be made copy-on-write later without breaking callers.

@@ -26,8 +26,8 @@ mdv analyze <path> [flags]
 | `-o, --output` | `-` (stdout) | Write output to a file |
 | `--format` | `table` | Output format: `table`, `json`, `markdown` |
 | `-d, --depth` | `-1` (unlimited) | Maximum dependency depth |
-| `--include` | — | Keep only modules matching this regex (repeatable) |
-| `--exclude` | — | Remove modules matching this regex (repeatable) |
+| `--include` | - | Keep only modules matching this regex (repeatable) |
+| `--exclude` | - | Remove modules matching this regex (repeatable) |
 | `--no-indirect` | `false` | Omit transitive dependencies |
 | `--audit` | `false` | Embed vulnerability, license, and conflict audit in output |
 
@@ -61,11 +61,11 @@ mdv export <path> --format <fmt> [flags]
 
 | Flag | Default | Description |
 |---|---|---|
-| `--format` | — | **Required.** `dot`, `mermaid`, or `json` |
+| `--format` | - | **Required.** `dot`, `mermaid`, or `json` |
 | `-o, --output` | `-` (stdout) | Write output to a file |
 | `-d, --depth` | `-1` | Maximum dependency depth |
-| `--include` | — | Include filter (regex, repeatable) |
-| `--exclude` | — | Exclude filter (regex, repeatable) |
+| `--include` | - | Include filter (regex, repeatable) |
+| `--exclude` | - | Exclude filter (regex, repeatable) |
 | `--no-indirect` | `false` | Omit indirect dependencies |
 
 **Examples**
@@ -96,8 +96,8 @@ mdv audit <path>
 
 The audit checks:
 - **CVEs** via the [OSV database](https://osv.dev) for each dependency version
-- **License compatibility** — flags non-permissive or conflicting licenses
-- **Version conflicts** — detects when the same package is required at multiple incompatible versions
+- **License compatibility** - flags non-permissive or conflicting licenses
+- **Version conflicts** - detects when the same package is required at multiple incompatible versions
 
 **Example output**
 
@@ -109,7 +109,7 @@ License issues   1 (GPL-3.0 in MIT project)
 Conflicts        0
 
 [CRITICAL] github.com/foo/bar@v1.2.3
-  CVE-2024-12345 — Remote code execution via malformed input
+  CVE-2024-12345 - Remote code execution via malformed input
   Fix: upgrade to v1.2.4
 ```
 
@@ -127,14 +127,17 @@ mdv serve <path> [flags]
 
 | Flag | Default | Description |
 |---|---|---|
-| `--port` | `7777` | HTTP port to listen on |
+| `--port` | `0` (auto-assign) | HTTP port to listen on |
 | `--audit` | `false` | Include audit data in the UI |
 
 **Example**
 
 ```bash
+# Port is auto-assigned — the chosen address is printed to stdout
 mdv serve . --audit
-# → http://localhost:7777
+
+# Use a fixed port
+mdv serve . --port 7777 --audit
 ```
 
 The web UI supports:
@@ -157,7 +160,7 @@ mdv diff <path> [flags]
 
 | Flag | Default | Description |
 |---|---|---|
-| `--from` | — | **Required.** Base git ref (branch, tag, or commit SHA) |
+| `--from` | - | **Required.** Base git ref (branch, tag, or commit SHA) |
 | `--to` | `HEAD` | Target ref to compare against |
 
 **Example output**
@@ -206,7 +209,7 @@ mdv docs <path> [flags]
 mdv docs . --output DEPENDENCIES.md --audit
 ```
 
-The generated file includes a dependency table, stats, and optional audit findings — suitable for committing to the repository or attaching to a release.
+The generated file includes a dependency table, stats, and optional audit findings - suitable for committing to the repository or attaching to a release.
 
 ---
 

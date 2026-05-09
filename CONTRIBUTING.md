@@ -26,7 +26,7 @@ Be respectful and constructive. Harassment or exclusionary behavior of any kind 
 
 ## Getting Started
 
-**Prerequisites:** Go 1.21+
+**Prerequisites:** Go 1.22+
 
 ```bash
 git clone https://github.com/devekkx/module-dependency-visualizer.git
