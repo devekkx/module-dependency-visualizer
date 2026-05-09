@@ -29,7 +29,7 @@ jobs:
         run: make build
 
       - name: Analyse & audit
-        run: ./dist/mdv analyse . --audit --format markdown
+        run: ./dist/mdv analyse . --audit
 
       - name: Diff dependencies
         run: ./dist/mdv diff . --from ${{ github.event.pull_request.base.sha }} || true
@@ -112,7 +112,7 @@ jobs:
           cache: true
 
       - name: gosec
-        uses: securego/gosec@master
+        uses: securego/gosec@v2.21.4
         with:
           args: '-fmt sarif -out gosec.sarif ./...'
 
