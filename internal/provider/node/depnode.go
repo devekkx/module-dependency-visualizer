@@ -3,7 +3,7 @@ package node
 import (
 	"fmt"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 // DepNode is an intermediate tree representation of a package and its

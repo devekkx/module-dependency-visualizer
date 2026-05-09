@@ -3,7 +3,7 @@ package node_test
 import (
 	"testing"
 
-	nodeprovider "module-dependency-visualizer/internal/provider/node"
+	nodeprovider "github.com/devekkx/module-dependency-visualizer/internal/provider/node"
 )
 
 func TestParsePackageJSON_Simple(t *testing.T) {

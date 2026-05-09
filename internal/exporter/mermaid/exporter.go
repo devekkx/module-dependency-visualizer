@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 // Exporter writes a graph as a Mermaid flowchart.

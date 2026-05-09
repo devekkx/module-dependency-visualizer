@@ -11,10 +11,10 @@ import (
 	"sync"
 	"time"
 
-	"module-dependency-visualizer/internal/audit"
-	"module-dependency-visualizer/internal/graph"
-	"module-dependency-visualizer/internal/provider"
-	"module-dependency-visualizer/internal/schema"
+	"github.com/devekkx/module-dependency-visualizer/internal/audit"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
+	"github.com/devekkx/module-dependency-visualizer/internal/schema"
 )
 
 //go:embed all:web

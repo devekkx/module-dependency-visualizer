@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 // Options configures which checks are run and how.

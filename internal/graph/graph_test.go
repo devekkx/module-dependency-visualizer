@@ -3,7 +3,7 @@ package graph_test
 import (
 	"testing"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 // buildTwoNodeGraph builds: A -> B

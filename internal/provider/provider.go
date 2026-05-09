@@ -3,7 +3,7 @@ package provider
 import (
 	"context"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 // ParseOptions configures how a provider parses a project.

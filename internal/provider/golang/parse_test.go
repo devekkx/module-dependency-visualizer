@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	goprovider "module-dependency-visualizer/internal/provider/golang"
+	goprovider "github.com/devekkx/module-dependency-visualizer/internal/provider/golang"
 )
 
 func readFixture(t *testing.T, name string) []byte {

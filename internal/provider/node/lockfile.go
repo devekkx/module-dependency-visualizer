@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 // lockfilePackage represents one entry in the package-lock.json "packages" map (v2/v3).

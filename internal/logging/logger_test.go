@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"module-dependency-visualizer/internal/logging"
+	"github.com/devekkx/module-dependency-visualizer/internal/logging"
 )
 
 func TestNew_WritesJSON(t *testing.T) {

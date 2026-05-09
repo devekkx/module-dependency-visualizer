@@ -4,7 +4,7 @@ import (
 	"sort"
 	"strings"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 // DetectConflicts returns all modules that appear with more than one resolved

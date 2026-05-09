@@ -3,8 +3,8 @@ package audit_test
 import (
 	"testing"
 
-	"module-dependency-visualizer/internal/audit"
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/audit"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 func buildConflictGraph(t *testing.T, nodes []graph.Node) *graph.Graph {

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"module-dependency-visualizer/internal/config"
+	"github.com/devekkx/module-dependency-visualizer/internal/config"
 )
 
 func TestBuildInfo_String(t *testing.T) {

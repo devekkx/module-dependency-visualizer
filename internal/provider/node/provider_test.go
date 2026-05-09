@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"module-dependency-visualizer/internal/provider"
-	nodeprovider "module-dependency-visualizer/internal/provider/node"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
+	nodeprovider "github.com/devekkx/module-dependency-visualizer/internal/provider/node"
 )
 
 // fakeLookPath always succeeds, returning "/usr/bin/<name>".

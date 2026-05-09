@@ -5,11 +5,11 @@ import (
 	"errors"
 	"testing"
 
-	"module-dependency-visualizer/internal/config"
-	"module-dependency-visualizer/internal/exporter"
-	"module-dependency-visualizer/internal/graph"
-	"module-dependency-visualizer/internal/logging"
-	"module-dependency-visualizer/internal/provider"
+	"github.com/devekkx/module-dependency-visualizer/internal/config"
+	"github.com/devekkx/module-dependency-visualizer/internal/exporter"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/logging"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
 )
 
 // stubProviderInternal is a test-only Provider that always detects and returns

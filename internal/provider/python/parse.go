@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 // DepNode is an intermediate tree of a package and its transitive dependencies.

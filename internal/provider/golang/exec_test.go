@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	goprovider "module-dependency-visualizer/internal/provider/golang"
+	goprovider "github.com/devekkx/module-dependency-visualizer/internal/provider/golang"
 )
 
 func TestExecRunner_Run_ValidCommand(t *testing.T) {

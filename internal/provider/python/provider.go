@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"module-dependency-visualizer/internal/graph"
-	"module-dependency-visualizer/internal/provider"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
 )
 
 // PythonProvider implements provider.Provider for Python projects.

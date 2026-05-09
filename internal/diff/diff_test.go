@@ -3,8 +3,8 @@ package diff_test
 import (
 	"testing"
 
-	"module-dependency-visualizer/internal/diff"
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/diff"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 func buildGraph(t *testing.T, nodes []graph.Node) *graph.Graph {

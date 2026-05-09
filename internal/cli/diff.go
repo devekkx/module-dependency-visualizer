@@ -13,10 +13,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"module-dependency-visualizer/internal/config"
-	"module-dependency-visualizer/internal/diff"
-	"module-dependency-visualizer/internal/graph"
-	"module-dependency-visualizer/internal/provider"
+	"github.com/devekkx/module-dependency-visualizer/internal/config"
+	"github.com/devekkx/module-dependency-visualizer/internal/diff"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
 )
 
 func newDiffCmd(deps *Deps) *cobra.Command {

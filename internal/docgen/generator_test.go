@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"module-dependency-visualizer/internal/docgen"
-	"module-dependency-visualizer/internal/graph"
-	"module-dependency-visualizer/internal/provider"
-	"module-dependency-visualizer/internal/schema"
+	"github.com/devekkx/module-dependency-visualizer/internal/docgen"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
+	"github.com/devekkx/module-dependency-visualizer/internal/schema"
 )
 
 func buildTestGraph(t *testing.T) *graph.Graph {

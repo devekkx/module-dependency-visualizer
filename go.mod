@@ -1,4 +1,4 @@
-module module-dependency-visualizer
+module github.com/devekkx/module-dependency-visualizer
 
 go 1.24
 

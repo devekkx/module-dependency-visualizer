@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"module-dependency-visualizer/internal/graph"
+	"github.com/devekkx/module-dependency-visualizer/internal/graph"
 )
 
 // ModGraphEdge represents a single line from `go mod graph` output.

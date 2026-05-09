@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"module-dependency-visualizer/internal/cli"
-	"module-dependency-visualizer/internal/provider"
+	"github.com/devekkx/module-dependency-visualizer/internal/cli"
+	"github.com/devekkx/module-dependency-visualizer/internal/provider"
 )
 
 // TestExecute_NoProviders verifies that Execute() runs without panicking.
@@ -25,7 +25,7 @@ func TestAnalyze_NoProviderForPath(t *testing.T) {
 	// Point at a temp dir with no go.mod → GoProvider won't detect it, but
 	// the stub provider in buildTestDeps always detects, so use a deps set
 	// with an empty provider registry.
-	import_ := "module-dependency-visualizer/internal/provider"
+	import_ := "github.com/devekkx/module-dependency-visualizer/internal/provider"
 	_ = import_
 
 	// The stub provider detects everything, so use a unique sub-command to
