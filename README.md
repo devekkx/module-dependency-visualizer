@@ -135,7 +135,6 @@ mdv analyse <path> [flags]
 | Flag | Default | Description |
 |---|---|---|
 | `-o, --output` | `-` (stdout) | Write output to file |
-| `--format` | `table` | `table`, `json`, or `markdown` |
 | `-d, --depth` | `-1` (unlimited) | Maximum dependency depth |
 | `--include` | - | Keep modules matching regex (repeatable) |
 | `--exclude` | - | Remove modules matching regex (repeatable) |
@@ -167,7 +166,7 @@ Checks each dependency against the OSV database, flags non-permissive licenses, 
 Launch an interactive D3.js dependency graph in your browser.
 
 ```
-mdv serve <path> [--port <n>] [--audit]
+mdv serve <path> [--port <n>] [--no-browser]
 ```
 
 ### `mdv diff`
@@ -178,7 +177,7 @@ Show dependency changes between two git refs.
 mdv diff <path> --from <ref> [--to <ref>]
 ```
 
-`--to` defaults to `HEAD`. Outputs added, removed, and version-bumped dependencies.
+`--from` defaults to `HEAD~1`. `--to` defaults to the working tree. Outputs added, removed, and version-bumped dependencies.
 
 ### `mdv docs`
 
@@ -256,7 +255,6 @@ A composite action is available at `.github/actions/mdv`.
 | Input | Default | Description |
 |---|---|---|
 | `path` | `.` | Path to the project root |
-| `format` | `table` | Output format: `table`, `json`, `markdown` |
 | `audit` | `false` | Run vulnerability and license audit |
 | `diff` | `""` | Show dependency changes since this ref |
 | `generate-docs` | `false` | Write `DEPENDENCIES.md` |

@@ -128,17 +128,16 @@ mdv serve <path> [flags]
 | Flag | Default | Description |
 |---|---|---|
 | `--port`, `-p` | `0` (auto-assign) | HTTP port to listen on |
-| `--audit` | `false` | Include audit data in the UI |
 | `--no-browser` | `false` | Skip opening the browser automatically |
 
 **Example**
 
 ```bash
 # Port is auto-assigned - the chosen address is printed to stdout
-mdv serve . --audit
+mdv serve .
 
 # Use a fixed port
-mdv serve . --port 7777 --audit
+mdv serve . --port 7777
 ```
 
 The web UI supports:
@@ -161,8 +160,10 @@ mdv diff <path> [flags]
 
 | Flag | Default | Description |
 |---|---|---|
-| `--from` | - | **Required.** Base git ref (branch, tag, or commit SHA) |
-| `--to` | `HEAD` | Target ref to compare against |
+| `--from` | `HEAD~1` | Base git ref (branch, tag, or commit SHA) |
+| `--to` | - (working tree) | Target ref to compare against |
+| `-f, --format` | `table` | Output format: `table`, `json`, `markdown` |
+| `-o, --output` | `-` (stdout) | Write output to a file |
 
 **Example output**
 
