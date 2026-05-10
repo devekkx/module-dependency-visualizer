@@ -251,7 +251,7 @@ function updateFilterBadge() {
 
 function getVisible() {
     const depthSet = bfsFromRoot(state.maxDepth);
-    const { direct, indirect, vulnOnly } = state.filters;
+    const { direct, indirect, dev, vulnOnly } = state.filters;
 
     const visNodes = state.allNodes.filter(n => {
         if (!depthSet.has(n.id)) return false;
