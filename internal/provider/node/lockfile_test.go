@@ -41,7 +41,7 @@ func TestParsePackageLock_V3_NodeCount(t *testing.T) {
 	}
 }
 
-func TestParsePackageLock_DevNodeMarkedIndirect(t *testing.T) {
+func TestParsePackageLock_DevNodeMarked(t *testing.T) {
 	data := fixtureFile(t, "npm-simple", "package-lock.json")
 	lock, err := nodeprovider.ParsePackageLock(data)
 	if err != nil {
@@ -53,11 +53,11 @@ func TestParsePackageLock_DevNodeMarkedIndirect(t *testing.T) {
 	}
 
 	for _, n := range g.Nodes() {
-		if n.Name == "typescript" && !n.Indirect {
-			t.Error("typescript is a devDependency and should be Indirect=true")
+		if n.Name == "typescript" && !n.Dev {
+			t.Error("typescript is a devDependency and should be Dev=true")
 		}
-		if n.Name == "chalk" && n.Indirect {
-			t.Error("chalk is a prod dependency and should not be Indirect")
+		if n.Name == "chalk" && n.Dev {
+			t.Error("chalk is a prod dependency and should not be Dev=true")
 		}
 	}
 }

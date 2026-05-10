@@ -50,10 +50,31 @@
                 <span id="depth-value">∞</span>
             </label>
 
-            <div class="filter-pills" title="Filter nodes by type">
-                <button class="filter-pill is-active" data-filter="direct">Direct</button>
-                <button class="filter-pill is-active" data-filter="indirect">Indirect</button>
-                <button class="filter-pill hidden" data-filter="vuln-only" id="filter-vuln-only">Vuln only</button>
+            <div class="filter-dropdown" id="filter-dropdown">
+                <button class="filter-trigger" id="filter-trigger">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+                    Filter
+                    <span class="filter-badge" id="filter-badge">All</span>
+                </button>
+                <div class="filter-menu hidden" id="filter-menu">
+                    <label class="filter-option">
+                        <input type="checkbox" data-filter="direct" checked />
+                        <span>Direct deps</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" data-filter="indirect" checked />
+                        <span>Indirect deps</span>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" data-filter="dev" checked />
+                        <span>Dev deps</span>
+                    </label>
+                    <div class="filter-menu-divider hidden" id="filter-divider-vuln"></div>
+                    <label class="filter-option hidden" id="filter-option-vuln">
+                        <input type="checkbox" data-filter="vuln-only" />
+                        <span>Vulnerable only</span>
+                    </label>
+                </div>
             </div>
 
             <button id="audit-btn" class="audit-trigger" title="Run security, license and conflict audit">

@@ -30,6 +30,7 @@ type NodeDTO struct {
 	Version    string         `json:"version"`
 	Kind       string         `json:"kind"`
 	Indirect   bool           `json:"indirect"`
+	Dev        bool           `json:"dev,omitempty"`
 	ReplacedBy *ReplacementDTO `json:"replaced_by,omitempty"`
 	Metadata   map[string]any `json:"metadata,omitempty"`
 }

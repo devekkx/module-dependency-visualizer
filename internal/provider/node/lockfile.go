@@ -102,8 +102,8 @@ func lockV2ToGraph(lock *PackageLock) (*graph.Graph, string, error) {
 			ID:       id,
 			Name:     name,
 			Version:  pkg.Version,
-			Kind:     graph.NodeKindModule,
-			Indirect: pkg.Dev,
+			Kind: graph.NodeKindModule,
+			Dev:  pkg.Dev,
 		}); err != nil {
 			continue // skip duplicate (same name@version from workspaces)
 		}
@@ -176,8 +176,8 @@ func lockV1ToGraph(lock *PackageLock) (*graph.Graph, string, error) {
 					ID:       toID,
 					Name:     name,
 					Version:  dep.Version,
-					Kind:     graph.NodeKindModule,
-					Indirect: dep.Dev,
+					Kind: graph.NodeKindModule,
+					Dev:  dep.Dev,
 				})
 				added[toID] = true
 			}

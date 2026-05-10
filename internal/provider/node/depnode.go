@@ -39,7 +39,7 @@ func buildGraph(root DepNode) (*graph.Graph, error) {
 				Name:     n.Name,
 				Version:  n.Version,
 				Kind:     kind,
-				Indirect: n.Dev,
+				Dev: n.Dev,
 			}); err != nil {
 				return fmt.Errorf("node: add node %s: %w", id, err)
 			}

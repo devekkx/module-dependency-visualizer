@@ -70,6 +70,7 @@ func nodeToDTO(n graph.Node) NodeDTO {
 		Version:  n.Version,
 		Kind:     string(n.Kind),
 		Indirect: n.Indirect,
+		Dev:      n.Dev,
 		Metadata: n.Metadata,
 	}
 	if n.ReplacedBy != nil {
