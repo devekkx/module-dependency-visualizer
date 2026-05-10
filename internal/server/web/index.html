@@ -50,10 +50,11 @@
                 <span id="depth-value">∞</span>
             </label>
 
-            <label class="ctrl-group" title="Show / hide indirect (dev) dependencies">
-                <input id="show-dev" type="checkbox" checked />
-                Dev deps
-            </label>
+            <div class="filter-pills" title="Filter nodes by type">
+                <button class="filter-pill is-active" data-filter="direct">Direct</button>
+                <button class="filter-pill is-active" data-filter="indirect">Indirect</button>
+                <button class="filter-pill hidden" data-filter="vuln-only" id="filter-vuln-only">Vuln only</button>
+            </div>
 
             <button id="audit-btn" class="audit-trigger" title="Run security, license and conflict audit">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

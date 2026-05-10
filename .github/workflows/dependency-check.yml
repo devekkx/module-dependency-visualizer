@@ -2,7 +2,8 @@ name: Dependency Check
 
 on:
   pull_request:
-    branches: [testing]
+    branches:
+        - testing
 
 concurrency:
   group: dep-check-${{ github.ref }}

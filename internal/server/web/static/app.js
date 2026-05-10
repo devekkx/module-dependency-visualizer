@@ -25,7 +25,7 @@ const state = {
     allLinks:  [],
     search:    '',
     maxDepth:  Infinity,
-    showDev:   true,
+    filters:   { direct: true, indirect: true, vulnOnly: false },
     selected:  null,
     // audit
     audit:     null,  // schema.AuditDTO once loaded
@@ -161,9 +161,19 @@ function setupControls() {
         render();
     });
 
-    document.getElementById('show-dev').addEventListener('change', function () {
-        state.showDev = this.checked;
-        render();
+    document.querySelectorAll('.filter-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const f = btn.dataset.filter;
+            if (f === 'vuln-only') {
+                state.filters.vulnOnly = !state.filters.vulnOnly;
+            } else if (f === 'direct') {
+                state.filters.direct = !state.filters.direct;
+            } else if (f === 'indirect') {
+                state.filters.indirect = !state.filters.indirect;
+            }
+            syncFilterPills();
+            render();
+        });
     });
 
     document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
@@ -201,11 +211,26 @@ function bfsFromRoot(maxD) {
     return visited;
 }
 
+function syncFilterPills() {
+    const { direct, indirect, vulnOnly } = state.filters;
+    document.querySelector('[data-filter="direct"]').classList.toggle('is-active', direct);
+    document.querySelector('[data-filter="indirect"]').classList.toggle('is-active', indirect);
+    document.querySelector('[data-filter="vuln-only"]').classList.toggle('is-active', vulnOnly);
+    document.querySelector('[data-filter="direct"]').classList.toggle('is-dimmed', vulnOnly);
+    document.querySelector('[data-filter="indirect"]').classList.toggle('is-dimmed', vulnOnly);
+}
+
 function getVisible() {
-    const depthSet  = bfsFromRoot(state.maxDepth);
-    const visNodes  = state.allNodes.filter(n =>
-        depthSet.has(n.id) && (state.showDev || !n.indirect)
-    );
+    const depthSet = bfsFromRoot(state.maxDepth);
+    const { direct, indirect, vulnOnly } = state.filters;
+
+    const visNodes = state.allNodes.filter(n => {
+        if (!depthSet.has(n.id)) return false;
+        if (n.kind === 'main') return true;
+        if (vulnOnly) return (state.vulnMap[n.id]?.length ?? 0) > 0;
+        if (n.indirect) return indirect;
+        return direct;
+    });
     const visIds    = new Set(visNodes.map(n => n.id));
     const visLinks  = state.allLinks.filter(l => {
         const src = typeof l.source === 'object' ? l.source.id : l.source;
@@ -516,9 +541,10 @@ function applyAuditData(data) {
         (state.vulnMap[v.node_id] ??= []).push(v);
     });
 
-    // Show legend entry for vulnerable nodes.
+    // Show legend entry and vuln-only filter when vulnerabilities are present.
     if (Object.keys(state.vulnMap).length > 0) {
         document.getElementById('legend-vuln').classList.remove('hidden');
+        document.getElementById('filter-vuln-only').classList.remove('hidden');
     }
 
     // Re-render to show vulnerability rings.
