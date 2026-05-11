@@ -50,6 +50,7 @@ func dtoToNode(dto NodeDTO) graph.Node {
 		Version:  dto.Version,
 		Kind:     graph.NodeKind(dto.Kind),
 		Indirect: dto.Indirect,
+		Dev:      dto.Dev,
 		Metadata: dto.Metadata,
 	}
 	if dto.ReplacedBy != nil {

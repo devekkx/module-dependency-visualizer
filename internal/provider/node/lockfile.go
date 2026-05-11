@@ -149,11 +149,17 @@ func lockV2ToGraph(lock *PackageLock) (*graph.Graph, string, error) {
 }
 
 // lockV1ToGraph handles package-lock.json v1 (recursive "dependencies" tree).
+// It performs two passes: first collecting all nodes, then building edges via
+// each package's `requires` field so that hoisted packages (the common case)
+// are correctly linked to their dependants.
 func lockV1ToGraph(lock *PackageLock) (*graph.Graph, string, error) {
 	b := graph.NewBuilder()
 	added := make(map[graph.NodeID]bool)
-	processed := make(map[graph.NodeID]bool)
 	edgeSet := make(map[[2]graph.NodeID]bool)
+
+	// nameToID maps package name → its NodeID.
+	// Top-level entries take priority; nested entries only fill gaps.
+	nameToID := make(map[string]graph.NodeID)
 
 	rootID := graph.NewNodeID(lock.Name, lock.Version)
 	if err := b.AddNode(graph.Node{
@@ -165,39 +171,64 @@ func lockV1ToGraph(lock *PackageLock) (*graph.Graph, string, error) {
 		return nil, "", fmt.Errorf("node: add root: %w", err)
 	}
 	added[rootID] = true
-	processed[rootID] = true
 
-	var walk func(fromID graph.NodeID, deps map[string]v1Dep) error
-	walk = func(fromID graph.NodeID, deps map[string]v1Dep) error {
+	// Pass 1: collect all nodes at all nesting levels.
+	// Top-level (depth 0) entries overwrite any previously registered name,
+	// ensuring that the flat registry reflects the hoisted (canonical) versions.
+	var collectNodes func(deps map[string]v1Dep, depth int)
+	collectNodes = func(deps map[string]v1Dep, depth int) {
 		for name, dep := range deps {
-			toID := graph.NewNodeID(name, dep.Version)
-			if !added[toID] {
+			id := graph.NewNodeID(name, dep.Version)
+			if !added[id] {
 				_ = b.AddNode(graph.Node{
-					ID:       toID,
-					Name:     name,
-					Version:  dep.Version,
-					Kind: graph.NodeKindModule,
-					Dev:  dep.Dev,
+					ID:      id,
+					Name:    name,
+					Version: dep.Version,
+					Kind:    graph.NodeKindModule,
+					Dev:     dep.Dev,
 				})
-				added[toID] = true
+				added[id] = true
 			}
-			ek := [2]graph.NodeID{fromID, toID}
-			if !edgeSet[ek] {
-				_ = b.AddEdge(graph.Edge{From: fromID, To: toID, Kind: graph.EdgeKindDependsOn})
-				edgeSet[ek] = true
+			if _, exists := nameToID[name]; !exists || depth == 0 {
+				nameToID[name] = id
 			}
-			if !processed[toID] {
-				processed[toID] = true
-				if err := walk(toID, dep.Dependencies); err != nil {
-					return err
-				}
-			}
+			collectNodes(dep.Dependencies, depth+1)
 		}
-		return nil
+	}
+	collectNodes(lock.Dependencies, 0)
+
+	addEdge := func(from, to graph.NodeID) {
+		ek := [2]graph.NodeID{from, to}
+		if !edgeSet[ek] {
+			_ = b.AddEdge(graph.Edge{From: from, To: to, Kind: graph.EdgeKindDependsOn})
+			edgeSet[ek] = true
+		}
 	}
 
-	if err := walk(rootID, lock.Dependencies); err != nil {
-		return nil, "", err
+	// Pass 2: build edges.
+	// For each package, use `requires` to add edges to the resolved versions.
+	// When a required dep is nested directly under the package, use that
+	// version; otherwise fall back to the hoisted nameToID registry.
+	var walkEdges func(fromID graph.NodeID, dep v1Dep)
+	walkEdges = func(fromID graph.NodeID, dep v1Dep) {
+		for reqName := range dep.Requires {
+			if nested, ok := dep.Dependencies[reqName]; ok {
+				addEdge(fromID, graph.NewNodeID(reqName, nested.Version))
+			} else if toID, ok := nameToID[reqName]; ok {
+				addEdge(fromID, toID)
+			}
+		}
+		for name, nested := range dep.Dependencies {
+			nestedID := graph.NewNodeID(name, nested.Version)
+			addEdge(fromID, nestedID)
+			walkEdges(nestedID, nested)
+		}
+	}
+
+	for name, dep := range lock.Dependencies {
+		toID := graph.NewNodeID(name, dep.Version)
+		addEdge(rootID, toID)
+		walkEdges(toID, dep)
 	}
 
 	g, err := b.Build()
