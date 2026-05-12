@@ -72,7 +72,7 @@ export default defineConfig({
 
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024 Emmanuel Kpendo',
+      copyright: 'Copyright © 2026 Emmanuel Komla Kpendo',
     },
 
     search: {

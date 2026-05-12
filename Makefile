@@ -11,7 +11,7 @@ LDFLAGS := -X '$(PKG)/internal/config.version=$(VERSION)' \
            -X '$(PKG)/internal/config.commit=$(COMMIT)'   \
            -X '$(PKG)/internal/config.buildDate=$(BUILD_DATE)'
 
-.PHONY: all build test test-race cover lint vet gosec clean tidy help
+.PHONY: all build install uninstall test test-race cover lint vet gosec clean tidy help
 
 all: lint test build
 
@@ -19,6 +19,14 @@ all: lint test build
 build:
 	@mkdir -p $(BUILD_DIR)
 	go build -ldflags "$(LDFLAGS)" -o $(BUILD_DIR)/$(BINARY) $(CMD)
+
+## install: build and install mdv to $(GOPATH)/bin (or ~/go/bin)
+install:
+	go install -ldflags "$(LDFLAGS)" $(CMD)
+
+## uninstall: remove mdv from $(GOPATH)/bin
+uninstall:
+	rm -f $(shell go env GOPATH)/bin/$(BINARY)
 
 ## test: run all tests
 test:

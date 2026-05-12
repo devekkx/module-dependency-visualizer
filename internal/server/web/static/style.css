@@ -35,7 +35,7 @@ body {
     font-size: 14px;
 }
 
-/*  Loading / Error ─ */
+/*  Loading / Error  */
 
 #loading, #error-banner {
     position: fixed;
@@ -70,7 +70,7 @@ body {
 
 #app { display: flex; flex-direction: column; height: 100vh; }
 
-/*  Topbar ─*/
+/*  Topbar */
 
 #topbar {
     display: flex;
@@ -120,7 +120,7 @@ body {
     border: 1px solid rgba(52,152,219,0.3);
 }
 
-/*  Controls ─*/
+/*  Controls */
 
 #controls {
     display: flex;
@@ -178,7 +178,7 @@ input[type="checkbox"] { accent-color: var(--color-accent); cursor: pointer; }
     position: relative;
 }
 
-/*  Graph Container ─ */
+/*  Graph Container  */
 
 #graph-container {
     flex: 1;
@@ -365,7 +365,7 @@ input[type="checkbox"] { accent-color: var(--color-accent); cursor: pointer; }
 
 #stat-sep { color: #4a5568; }
 
-/*  Empty State ─ */
+/*  Empty State  */
 
 #empty-state {
     position: absolute;
@@ -376,6 +376,81 @@ input[type="checkbox"] { accent-color: var(--color-accent); cursor: pointer; }
     color: var(--color-muted);
     font-size: 0.9rem;
     pointer-events: none;
+}
+
+/*  Filter Dropdown  */
+
+.filter-dropdown {
+    position: relative;
+}
+
+.filter-trigger {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius);
+    color: #bdc3c7;
+    padding: 5px 10px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background var(--transition), border-color var(--transition);
+}
+
+.filter-trigger:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.3);
+}
+
+.filter-badge {
+    background: rgba(52,152,219,0.2);
+    color: var(--color-accent);
+    border-radius: 10px;
+    padding: 1px 7px;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.filter-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #2c3e50;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    min-width: 150px;
+    z-index: 50;
+    padding: 4px 0;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    color: #bdc3c7;
+    transition: background var(--transition);
+    white-space: nowrap;
+    user-select: none;
+}
+
+.filter-option:hover { background: rgba(255,255,255,0.06); }
+
+.filter-option input[type="checkbox"] {
+    accent-color: var(--color-accent);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.filter-menu-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin: 4px 0;
 }
 
 /*  Audit Button  */
@@ -406,7 +481,7 @@ input[type="checkbox"] { accent-color: var(--color-accent); cursor: pointer; }
     pointer-events: none;
 }
 
-/*  Audit Overlay ─ */
+/*  Audit Overlay  */
 
 #audit-overlay {
     position: fixed;
@@ -613,7 +688,7 @@ input[type="checkbox"] { accent-color: var(--color-accent); cursor: pointer; }
     font-style: italic;
 }
 
-/*  Vulnerability ring on graph nodes ─ */
+/*  Vulnerability ring on graph nodes  */
 
 .node-vuln-ring {
     pointer-events: none;
@@ -653,7 +728,7 @@ input[type="checkbox"] { accent-color: var(--color-accent); cursor: pointer; }
     line-height: 1.4;
 }
 
-/*  Legend vuln dot ─ */
+/*  Legend vuln dot  */
 
 .legend-dot.vuln {
     background: var(--color-vuln);

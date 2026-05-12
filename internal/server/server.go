@@ -157,7 +157,14 @@ func (s *Server) loadGraph(ctx context.Context) error {
 		return fmt.Errorf("server: parse graph: %w", err)
 	}
 
-	jsonData, err := schema.Encode(g, schema.EncodeOptions{})
+	jsonData, err := schema.Encode(g, schema.EncodeOptions{
+		Project: schema.Project{
+			Name:       proj.Name,
+			Language:   proj.Language,
+			RootPath:   proj.RootPath,
+			MainModule: proj.MainModule,
+		},
+	})
 	if err != nil {
 		return fmt.Errorf("server: encode graph: %w", err)
 	}

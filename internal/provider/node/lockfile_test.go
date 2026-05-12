@@ -41,7 +41,7 @@ func TestParsePackageLock_V3_NodeCount(t *testing.T) {
 	}
 }
 
-func TestParsePackageLock_DevNodeMarkedIndirect(t *testing.T) {
+func TestParsePackageLock_DevNodeMarked(t *testing.T) {
 	data := fixtureFile(t, "npm-simple", "package-lock.json")
 	lock, err := nodeprovider.ParsePackageLock(data)
 	if err != nil {
@@ -53,11 +53,11 @@ func TestParsePackageLock_DevNodeMarkedIndirect(t *testing.T) {
 	}
 
 	for _, n := range g.Nodes() {
-		if n.Name == "typescript" && !n.Indirect {
-			t.Error("typescript is a devDependency and should be Indirect=true")
+		if n.Name == "typescript" && !n.Dev {
+			t.Error("typescript is a devDependency and should be Dev=true")
 		}
-		if n.Name == "chalk" && n.Indirect {
-			t.Error("chalk is a prod dependency and should not be Indirect")
+		if n.Name == "chalk" && n.Dev {
+			t.Error("chalk is a prod dependency and should not be Dev=true")
 		}
 	}
 }
@@ -107,6 +107,37 @@ func TestParsePackageLock_V1_BuildsGraph(t *testing.T) {
 	}
 	if g.NodeCount() != 3 {
 		t.Errorf("NodeCount = %d; want 3", g.NodeCount())
+	}
+}
+
+func TestParsePackageLock_V1_HoistedRequires(t *testing.T) {
+	// supports-color is hoisted to the root level (not nested under chalk),
+	// so the edge chalk→supports-color must come from chalk.requires, not
+	// from the nesting tree.
+	data := []byte(`{
+		"name": "v1-app", "version": "1.0.0", "lockfileVersion": 1,
+		"dependencies": {
+			"chalk": {
+				"version": "4.1.2",
+				"requires": {"supports-color": "^7.0.0"},
+				"dependencies": {}
+			},
+			"supports-color": {"version": "7.2.0", "requires": {}}
+		}
+	}`)
+	lock, err := nodeprovider.ParsePackageLock(data)
+	if err != nil {
+		t.Fatalf("ParsePackageLock: %v", err)
+	}
+	g, _, err := nodeprovider.LockToGraph(lock)
+	if err != nil {
+		t.Fatalf("LockToGraph: %v", err)
+	}
+	if g.NodeCount() != 3 {
+		t.Errorf("NodeCount = %d; want 3", g.NodeCount())
+	}
+	if g.EdgeCount() != 3 { // root→chalk, root→supports-color, chalk→supports-color
+		t.Errorf("EdgeCount = %d; want 3", g.EdgeCount())
 	}
 }
 

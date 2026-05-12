@@ -50,7 +50,7 @@ func Filter(g *Graph, opts FilterOptions) (*Graph, error) {
 			continue
 		}
 
-		if opts.NoIndirect && n.Indirect {
+		if opts.NoIndirect && (n.Indirect || n.Dev) {
 			delete(allowed, id)
 			continue
 		}

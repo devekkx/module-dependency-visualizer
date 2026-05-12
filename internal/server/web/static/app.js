@@ -25,7 +25,7 @@ const state = {
     allLinks:  [],
     search:    '',
     maxDepth:  Infinity,
-    showDev:   true,
+    filters:   { direct: true, indirect: true, dev: true, vulnOnly: false },
     selected:  null,
     // audit
     audit:     null,  // schema.AuditDTO once loaded
@@ -161,9 +161,36 @@ function setupControls() {
         render();
     });
 
-    document.getElementById('show-dev').addEventListener('change', function () {
-        state.showDev = this.checked;
-        render();
+    // Dropdown filter
+    const filterTrigger = document.getElementById('filter-trigger');
+    const filterMenu    = document.getElementById('filter-menu');
+
+    filterTrigger.addEventListener('click', e => {
+        e.stopPropagation();
+        filterMenu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', e => {
+        if (!document.getElementById('filter-dropdown').contains(e.target)) {
+            filterMenu.classList.add('hidden');
+        }
+    });
+
+    filterMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', () => {
+            const f = cb.dataset.filter;
+            if (f === 'vuln-only') {
+                state.filters.vulnOnly = cb.checked;
+            } else if (f === 'direct') {
+                state.filters.direct = cb.checked;
+            } else if (f === 'indirect') {
+                state.filters.indirect = cb.checked;
+            } else if (f === 'dev') {
+                state.filters.dev = cb.checked;
+            }
+            updateFilterBadge();
+            render();
+        });
     });
 
     document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
@@ -201,11 +228,39 @@ function bfsFromRoot(maxD) {
     return visited;
 }
 
+function updateFilterBadge() {
+    const { direct, indirect, dev, vulnOnly } = state.filters;
+    const badge = document.getElementById('filter-badge');
+    if (vulnOnly) {
+        badge.textContent = 'Vuln only';
+        badge.style.cssText = 'background:rgba(229,62,62,0.25);color:#fc8181';
+        return;
+    }
+    const active = [direct && 'Direct', indirect && 'Indirect', dev && 'Dev'].filter(Boolean);
+    if (active.length === 3) {
+        badge.textContent = 'All';
+        badge.style.cssText = '';
+    } else if (active.length === 0) {
+        badge.textContent = 'None';
+        badge.style.cssText = 'background:rgba(255,255,255,0.06);color:#7f8c8d';
+    } else {
+        badge.textContent = active.join(' & ');
+        badge.style.cssText = 'background:rgba(52,152,219,0.2);color:#3498db';
+    }
+}
+
 function getVisible() {
-    const depthSet  = bfsFromRoot(state.maxDepth);
-    const visNodes  = state.allNodes.filter(n =>
-        depthSet.has(n.id) && (state.showDev || !n.indirect)
-    );
+    const depthSet = bfsFromRoot(state.maxDepth);
+    const { direct, indirect, dev, vulnOnly } = state.filters;
+
+    const visNodes = state.allNodes.filter(n => {
+        if (!depthSet.has(n.id)) return false;
+        if (n.kind === 'main') return true;
+        if (vulnOnly) return (state.vulnMap[n.id]?.length ?? 0) > 0;
+        if (n.dev) return dev;
+        if (n.indirect) return indirect;
+        return direct;
+    });
     const visIds    = new Set(visNodes.map(n => n.id));
     const visLinks  = state.allLinks.filter(l => {
         const src = typeof l.source === 'object' ? l.source.id : l.source;
@@ -386,7 +441,8 @@ function showDetail(d) {
     document.getElementById('detail-name').textContent    = d.name;
     document.getElementById('detail-version').textContent = d.version  || '-';
     document.getElementById('detail-kind').textContent    = d.kind     || '-';
-    document.getElementById('detail-indirect').textContent = d.indirect ? 'Yes' : 'No';
+    document.getElementById('detail-indirect').textContent =
+        d.dev ? 'Dev' : (d.indirect ? 'Yes' : 'No');
 
     // License
     const licenseRow = document.getElementById('detail-license-row');
@@ -450,7 +506,7 @@ function closeSidebar() {
 // Helpers
 function nodeColor(d) {
     if (d.kind === 'main') return CFG.colors.main;
-    if (d.indirect)        return CFG.colors.dev;
+    if (d.dev || d.indirect) return CFG.colors.dev;
     return CFG.colors.module;
 }
 
@@ -516,9 +572,11 @@ function applyAuditData(data) {
         (state.vulnMap[v.node_id] ??= []).push(v);
     });
 
-    // Show legend entry for vulnerable nodes.
+    // Show legend entry and vuln-only filter when vulnerabilities are present.
     if (Object.keys(state.vulnMap).length > 0) {
         document.getElementById('legend-vuln').classList.remove('hidden');
+        document.getElementById('filter-option-vuln').classList.remove('hidden');
+        document.getElementById('filter-divider-vuln').classList.remove('hidden');
     }
 
     // Re-render to show vulnerability rings.

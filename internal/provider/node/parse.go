@@ -296,8 +296,8 @@ func ParseBunLS(pkg PackageJSON, data []byte) (*graph.Graph, string, error) {
 		if !added[id] {
 			_ = b.AddNode(graph.Node{
 				ID: id, Name: n.name, Version: n.version,
-				Kind:     graph.NodeKindModule,
-				Indirect: isDev,
+				Kind: graph.NodeKindModule,
+				Dev:  isDev,
 			})
 			added[id] = true
 		}

@@ -36,6 +36,7 @@ type Node struct {
 	Version     string
 	Kind        NodeKind
 	Indirect    bool
+	Dev         bool
 	ReplacedBy  *Replacement
 	Metadata    map[string]any
 }
