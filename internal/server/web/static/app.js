@@ -26,10 +26,19 @@ const state = {
     search:    '',
     maxDepth:  Infinity,
     filters:   { direct: true, indirect: true, dev: true, vulnOnly: false },
+    viewMode:  'graph',  // 'graph' | 'table'
     selected:  null,
     // audit
     audit:     null,  // schema.AuditDTO once loaded
     vulnMap:   {},    // nodeID → [VulnDTO]
+};
+
+const VIEW_ICONS = {
+    graph:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><line x1="12" y1="7.5" x2="5.8" y2="16.8"/><line x1="12" y1="7.5" x2="18.2" y2="16.8"/></svg>`,
+    table:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></svg>`,
+    tree:    `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="4" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><line x1="12" y1="6" x2="12" y2="11"/><line x1="12" y1="11" x2="6" y2="16"/><line x1="12" y1="11" x2="18" y2="16"/></svg>`,
+    treemap: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="9" height="11"/><rect x="3" y="16" width="9" height="5"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="10" width="7" height="11"/></svg>`,
+    list:    `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="5" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="5" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>`,
 };
 
 // D3 selections / simulation
@@ -63,6 +72,7 @@ async function init() {
         applyMeta(data);
         setupSVG();
         setupControls();
+        document.getElementById('view-icon').innerHTML = VIEW_ICONS.graph;
         render();
     } catch (err) {
         document.getElementById('loading').classList.add('hidden');
@@ -149,7 +159,11 @@ function setupSVG() {
 function setupControls() {
     document.getElementById('search').addEventListener('input', function () {
         state.search = this.value.trim().toLowerCase();
-        updateHighlight();
+        if (state.viewMode === 'table' || state.viewMode === 'list') {
+            render();
+        } else {
+            updateHighlight();
+        }
     });
 
     const slider    = document.getElementById('depth-slider');
@@ -195,12 +209,60 @@ function setupControls() {
 
     document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
 
+    // View dropdown
+    setupViewDropdown();
+
     // Audit button
     document.getElementById('audit-btn').addEventListener('click', openAuditPanel);
     document.getElementById('audit-close').addEventListener('click', closeAuditPanel);
     document.getElementById('audit-overlay').addEventListener('click', e => {
         if (e.target === document.getElementById('audit-overlay')) closeAuditPanel();
     });
+}
+
+// View dropdown
+function setupViewDropdown() {
+    const trigger = document.getElementById('view-trigger');
+    const menu    = document.getElementById('view-menu');
+
+    trigger.addEventListener('click', e => {
+        e.stopPropagation();
+        menu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', e => {
+        if (!document.getElementById('view-dropdown').contains(e.target)) {
+            menu.classList.add('hidden');
+        }
+    });
+
+    menu.querySelectorAll('.view-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+            menu.classList.add('hidden');
+            switchView(btn.dataset.view);
+        });
+    });
+}
+
+const ALL_VIEWS = ['graph', 'table', 'tree', 'treemap', 'list'];
+
+function switchView(view) {
+    state.viewMode = view;
+
+    ALL_VIEWS.forEach(v => {
+        const el = document.getElementById(`${v}-container`);
+        if (el) el.classList.toggle('hidden', v !== view);
+    });
+
+    document.getElementById('view-label').textContent =
+        view.charAt(0).toUpperCase() + view.slice(1);
+    document.getElementById('view-icon').innerHTML = VIEW_ICONS[view] || '';
+
+    document.querySelectorAll('.view-option').forEach(opt => {
+        opt.classList.toggle('active', opt.dataset.view === view);
+    });
+
+    render();
 }
 
 // BFS depth filtering
@@ -275,9 +337,33 @@ function render() {
     const { nodes, links } = getVisible();
     const visCount = nodes.length;
 
-    document.getElementById('empty-state').classList.toggle('hidden', visCount > 0);
     document.getElementById('stat-visible').textContent =
         visCount !== state.allNodes.length ? `${visCount} visible` : '';
+
+    if (state.viewMode === 'table') {
+        document.getElementById('empty-state').classList.add('hidden');
+        renderTable(nodes);
+        return;
+    }
+    if (state.viewMode === 'tree') {
+        document.getElementById('empty-state').classList.add('hidden');
+        renderTree(nodes);
+        updateHighlight();
+        return;
+    }
+    if (state.viewMode === 'treemap') {
+        document.getElementById('empty-state').classList.add('hidden');
+        renderTreemap(nodes);
+        updateHighlight();
+        return;
+    }
+    if (state.viewMode === 'list') {
+        document.getElementById('empty-state').classList.add('hidden');
+        renderList(nodes);
+        return;
+    }
+
+    document.getElementById('empty-state').classList.toggle('hidden', visCount > 0);
 
     const container = document.getElementById('graph-container');
     const { width: W, height: H } = container.getBoundingClientRect();
@@ -377,22 +463,31 @@ function render() {
 
 // Highlight (search)
 function updateHighlight() {
-    if (!nodeSel) return;
     const q = state.search;
 
-    nodeSel.attr('opacity', d =>
-        q && !d.name.toLowerCase().includes(q) ? 0.12 : 1
-    );
-    labelSel.attr('opacity', d =>
-        q && !d.name.toLowerCase().includes(q) ? 0.08 : 1
-    );
-    linkSel.attr('opacity', d => {
-        if (!q) return 1;
-        const sn = typeof d.source === 'object' ? d.source.name : '';
-        const tn = typeof d.target === 'object' ? d.target.name : '';
-        const match = sn.toLowerCase().includes(q) || tn.toLowerCase().includes(q);
-        return match ? 0.7 : 0.05;
-    });
+    if (state.viewMode === 'graph') {
+        if (!nodeSel) return;
+        nodeSel.attr('opacity', d =>
+            q && !d.name.toLowerCase().includes(q) ? 0.12 : 1
+        );
+        labelSel.attr('opacity', d =>
+            q && !d.name.toLowerCase().includes(q) ? 0.08 : 1
+        );
+        linkSel.attr('opacity', d => {
+            if (!q) return 1;
+            const sn = typeof d.source === 'object' ? d.source.name : '';
+            const tn = typeof d.target === 'object' ? d.target.name : '';
+            return (sn.toLowerCase().includes(q) || tn.toLowerCase().includes(q)) ? 0.7 : 0.05;
+        });
+    } else if (state.viewMode === 'tree') {
+        d3.selectAll('#tree-container .tree-node').attr('opacity', d =>
+            q && d.data && !d.data.name.toLowerCase().includes(q) ? 0.12 : 1
+        );
+    } else if (state.viewMode === 'treemap') {
+        d3.selectAll('#treemap-container .tm-cell').attr('opacity', d =>
+            q && d.depth > 0 && !d.data.name.toLowerCase().includes(q) ? 0.15 : 1
+        );
+    }
 }
 
 // Drag
@@ -501,6 +596,315 @@ function renderDepList(elId, nodes) {
 function closeSidebar() {
     document.getElementById('sidebar').classList.add('hidden');
     state.selected = null;
+}
+
+// Table view
+function renderTable(nodes) {
+    const tbody     = document.getElementById('dep-table-body');
+    const emptyEl   = document.getElementById('table-empty-state');
+
+    if (nodes.length === 0) {
+        tbody.innerHTML = '';
+        emptyEl.classList.remove('hidden');
+        return;
+    }
+    emptyEl.classList.add('hidden');
+
+    const depCounts = {};
+    state.allLinks.forEach(l => {
+        const src = resolveId(l.source);
+        depCounts[src] = (depCounts[src] || 0) + 1;
+    });
+
+    tbody.innerHTML = nodes.map(n => {
+        const vulns  = state.vulnMap[n.id] || [];
+        const deps   = depCounts[n.id] || 0;
+        const { label: typeLabel, cls: typeClass } = nodeTypeInfo(n);
+        const vulnCell = vulns.length > 0
+            ? `<span class="vuln-count-badge">⚠ ${vulns.length}</span>`
+            : `<span class="no-vuln">-</span>`;
+        return `<tr class="dep-row" data-id="${escHtml(n.id)}">
+            <td><span class="dep-name-cell">${escHtml(n.name)}</span></td>
+            <td><span class="dep-version-cell">${escHtml(n.version || '-')}</span></td>
+            <td><span class="type-badge ${typeClass}">${typeLabel}</span></td>
+            <td class="dep-count-cell">${deps || '-'}</td>
+            <td>${vulnCell}</td>
+        </tr>`;
+    }).join('');
+
+    tbody.querySelectorAll('.dep-row').forEach(row => {
+        row.addEventListener('click', () => {
+            const node = state.allNodes.find(n => n.id === row.dataset.id);
+            if (node) showDetail(node);
+        });
+    });
+}
+
+function nodeTypeInfo(n) {
+    if (n.kind === 'main') return { label: 'Main',     cls: 'type-main' };
+    if (n.dev)             return { label: 'Dev',      cls: 'type-dev' };
+    if (n.indirect)        return { label: 'Indirect', cls: 'type-indirect' };
+    return                        { label: 'Direct',   cls: 'type-direct' };
+}
+
+function escHtml(s) {
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+// Shared hierarchy builder (DFS tree subset of the DAG)
+function buildHierarchy(visibleNodes) {
+    if (!visibleNodes.length) return null;
+    const visIds  = new Set(visibleNodes.map(n => n.id));
+    const root    = visibleNodes.find(n => n.kind === 'main') || visibleNodes[0];
+    const nodeMap = Object.fromEntries(state.allNodes.map(n => [n.id, n]));
+    const adj     = {};
+    state.allLinks.forEach(l => {
+        const src = resolveId(l.source), tgt = resolveId(l.target);
+        if (visIds.has(src) && visIds.has(tgt)) (adj[src] ??= []).push(tgt);
+    });
+    const visited = new Set();
+    function dfs(id) {
+        if (visited.has(id)) return null;
+        visited.add(id);
+        const node = nodeMap[id];
+        if (!node || !visIds.has(id)) return null;
+        const children = (adj[id] || []).map(dfs).filter(Boolean);
+        return { ...node, children };
+    }
+    return dfs(root.id);
+}
+
+// Tree view
+function renderTree(nodes) {
+    const container = document.getElementById('tree-container');
+    container.innerHTML = '';
+    const emptyEl = document.getElementById('tree-empty-state');
+    const data    = buildHierarchy(nodes);
+    if (!data) { emptyEl.classList.remove('hidden'); return; }
+    emptyEl.classList.add('hidden');
+
+    const { width: W, height: H } = container.getBoundingClientRect();
+    const svg = d3.select('#tree-container').append('svg')
+        .attr('width', '100%').attr('height', '100%');
+
+    const zoom = d3.zoom().scaleExtent([0.05, 4])
+        .on('zoom', e => g.attr('transform', e.transform));
+    svg.call(zoom);
+    svg.on('click', () => { state.selected = null; closeSidebar(); });
+
+    const g = svg.append('g');
+    g.append('g').attr('class', 'tree-links');
+    g.append('g').attr('class', 'tree-nodes');
+
+    const root = d3.hierarchy(data, d => d.children?.length > 0 ? d.children : null);
+
+    // Collapse beyond depth 1 initially
+    root.descendants().forEach(d => {
+        if (d.depth > 1 && d.children) { d._children = d.children; d.children = null; }
+    });
+
+    function update() {
+        d3.tree().nodeSize([28, 220])(root);
+
+        g.select('.tree-links').selectAll('path')
+            .data(root.links(), d => `${d.source.data.id}→${d.target.data.id}`)
+            .join(
+                enter => enter.append('path')
+                    .attr('fill', 'none').attr('stroke', '#c5cdd6').attr('stroke-width', 1.2)
+                    .attr('opacity', 0)
+                    .attr('d', d3.linkHorizontal().x(d => d.y).y(d => d.x))
+                    .call(el => el.transition().duration(220).attr('opacity', 1)),
+                upd => upd.transition().duration(220)
+                    .attr('d', d3.linkHorizontal().x(d => d.y).y(d => d.x)),
+                exit => exit.transition().duration(220).attr('opacity', 0).remove()
+            );
+
+        g.select('.tree-nodes').selectAll('g.tree-node')
+            .data(root.descendants(), d => d.data.id)
+            .join(
+                enter => {
+                    const ng = enter.append('g').attr('class', 'tree-node')
+                        .attr('transform', d => `translate(${d.y},${d.x})`)
+                        .attr('opacity', 0)
+                        .call(el => el.transition().duration(220).attr('opacity', 1));
+
+                    ng.append('circle')
+                        .attr('r', d => d.data.kind === 'main' ? 9 : 6)
+                        .attr('fill', d => nodeColor(d.data))
+                        .attr('stroke', d => state.vulnMap[d.data.id]?.length > 0 ? '#e53e3e' : '#fff')
+                        .attr('stroke-width', d => state.vulnMap[d.data.id]?.length > 0 ? 3 : 2)
+                        .attr('cursor', 'pointer')
+                        .on('click', (ev, d) => {
+                            ev.stopPropagation();
+                            if (d.children)       { d._children = d.children; d.children = null; }
+                            else if (d._children) { d.children = d._children; d._children = null; }
+                            update();
+                            showDetail(d.data);
+                        })
+                        .on('mouseover', (ev, d) => showTooltip(ev, d.data))
+                        .on('mouseout',  hideTooltip);
+
+                    ng.append('text').attr('class', 'tree-collapse-indicator')
+                        .attr('x', 0).attr('y', 0).attr('dy', '0.32em')
+                        .attr('text-anchor', 'middle').attr('font-size', '8px')
+                        .attr('fill', '#fff').attr('pointer-events', 'none');
+
+                    ng.append('text').attr('class', 'tree-node-label')
+                        .attr('dy', '0.32em').attr('font-size', '11px')
+                        .attr('fill', '#2c3e50').attr('pointer-events', 'none');
+
+                    return ng;
+                },
+                upd => upd.transition().duration(220)
+                    .attr('transform', d => `translate(${d.y},${d.x})`),
+                exit => exit.transition().duration(220).attr('opacity', 0).remove()
+            );
+
+        // Sync text on all current nodes
+        g.select('.tree-nodes').selectAll('g.tree-node').select('.tree-node-label')
+            .attr('x', d => d.data.kind === 'main' ? 15 : 12)
+            .text(d => d.data.name);
+        g.select('.tree-nodes').selectAll('g.tree-node').select('.tree-collapse-indicator')
+            .text(d => d._children ? '+' : (d.children?.length > 0 ? '−' : ''));
+    }
+
+    update();
+    svg.call(zoom.transform, d3.zoomIdentity.translate(60, H / 2));
+}
+
+// Treemap view
+function renderTreemap(nodes) {
+    const container = document.getElementById('treemap-container');
+    container.innerHTML = '';
+    const emptyEl = document.getElementById('treemap-empty-state');
+    const data    = buildHierarchy(nodes);
+    if (!data) { emptyEl.classList.remove('hidden'); return; }
+    emptyEl.classList.add('hidden');
+
+    const { width: W, height: H } = container.getBoundingClientRect();
+
+    const root = d3.hierarchy(data, d => d.children?.length > 0 ? d.children : null)
+        .sum(() => 1)
+        .sort((a, b) => b.value - a.value);
+
+    d3.treemap().size([W, H])
+        .paddingOuter(3).paddingTop(18).paddingInner(2).round(true)(root);
+
+    const svg = d3.select('#treemap-container').append('svg')
+        .attr('width', W).attr('height', H);
+
+    const cw = d => Math.max(0, d.x1 - d.x0);
+    const ch = d => Math.max(0, d.y1 - d.y0);
+
+    const cell = svg.selectAll('g.tm-cell')
+        .data(root.descendants())
+        .join('g').attr('class', 'tm-cell')
+        .attr('transform', d => `translate(${d.x0},${d.y0})`);
+
+    cell.append('rect')
+        .attr('width',  cw).attr('height', ch)
+        .attr('fill',         d => d.depth === 0 ? '#e3e8ef' : nodeColor(d.data))
+        .attr('fill-opacity', d => d.depth === 0 ? 1 : (d.children ? 0.28 : 0.72))
+        .attr('stroke', '#fff').attr('stroke-width', 1.5)
+        .attr('cursor', d => d.depth > 0 ? 'pointer' : 'default')
+        .on('click',     (ev, d) => { if (d.depth > 0) { ev.stopPropagation(); showDetail(d.data); } })
+        .on('mouseover', (ev, d) => { if (d.depth > 0 && !d.children) showTooltip(ev, d.data); })
+        .on('mouseout',  hideTooltip);
+
+    // Label for parent tiles (in the paddingTop header)
+    cell.filter(d => d.depth > 0 && d.children && cw(d) > 30)
+        .append('text')
+        .attr('x', 4).attr('y', 13)
+        .attr('font-size', '10px').attr('font-weight', '600')
+        .attr('fill', '#fff').attr('pointer-events', 'none')
+        .text(d => {
+            const max = Math.floor(cw(d) / 7);
+            return d.data.name.length > max ? d.data.name.slice(0, max - 1) + '…' : d.data.name;
+        });
+
+    // Label for root tile
+    cell.filter(d => d.depth === 0 && cw(d) > 40)
+        .append('text')
+        .attr('x', 6).attr('y', 14)
+        .attr('font-size', '10px').attr('font-weight', '600')
+        .attr('fill', '#636e72').attr('pointer-events', 'none')
+        .text(d => d.data.name);
+
+    // Label for leaf tiles
+    cell.filter(d => !d.children && cw(d) > 40 && ch(d) > 16)
+        .append('text')
+        .attr('x', 4).attr('y', d => ch(d) / 2).attr('dy', '0.35em')
+        .attr('font-size', '10px').attr('fill', '#fff').attr('pointer-events', 'none')
+        .text(d => {
+            const max = Math.floor(cw(d) / 6.5);
+            return d.data.name.length > max ? d.data.name.slice(0, max - 1) + '…' : d.data.name;
+        });
+
+    // Small red dot for vulnerable leaf tiles
+    cell.filter(d => !d.children && state.vulnMap[d.data.id]?.length > 0 && cw(d) > 12 && ch(d) > 12)
+        .append('circle')
+        .attr('cx', d => cw(d) - 6).attr('cy', 6).attr('r', 3.5)
+        .attr('fill', '#e53e3e').attr('pointer-events', 'none');
+}
+
+// List view
+function renderList(nodes) {
+    const container = document.getElementById('list-container');
+    container.innerHTML = '';
+
+    const q = state.search;
+    const groups = [
+        { label: 'Main Module',           cls: 'type-main',     items: nodes.filter(n => n.kind === 'main') },
+        { label: 'Direct Dependencies',   cls: 'type-direct',   items: nodes.filter(n => n.kind !== 'main' && !n.dev && !n.indirect) },
+        { label: 'Indirect Dependencies', cls: 'type-indirect', items: nodes.filter(n => n.indirect && !n.dev) },
+        { label: 'Dev Dependencies',      cls: 'type-dev',      items: nodes.filter(n => n.dev) },
+    ];
+
+    let anyVisible = false;
+    groups.forEach(group => {
+        const items = q
+            ? group.items.filter(n => n.name.toLowerCase().includes(q))
+            : group.items;
+        if (!items.length) return;
+        anyVisible = true;
+
+        const section = document.createElement('div');
+        section.className = 'list-group';
+        section.innerHTML = `
+            <div class="list-group-header">
+                <span class="type-badge ${group.cls}">${group.label}</span>
+                <span class="list-group-count">${items.length}</span>
+            </div>
+            <div class="list-group-items">
+                ${items.map(n => {
+                    const vulns = state.vulnMap[n.id] || [];
+                    const vulnBadge = vulns.length > 0
+                        ? `<span class="vuln-count-badge">⚠ ${vulns.length}</span>` : '';
+                    return `<div class="list-item" data-id="${escHtml(n.id)}">
+                        <span class="list-item-dot" style="background:${nodeColor(n)}"></span>
+                        <span class="list-item-name">${escHtml(n.name)}</span>
+                        <span class="list-item-version">${escHtml(n.version || '')}</span>
+                        ${vulnBadge}
+                    </div>`;
+                }).join('')}
+            </div>`;
+
+        section.querySelectorAll('.list-item').forEach(row => {
+            row.addEventListener('click', () => {
+                const node = state.allNodes.find(n => n.id === row.dataset.id);
+                if (node) showDetail(node);
+            });
+        });
+        container.appendChild(section);
+    });
+
+    if (!anyVisible) {
+        container.innerHTML = '<div class="list-empty">No modules found</div>';
+    }
 }
 
 // Helpers
